@@ -1,0 +1,27 @@
+/upload
+  /{folder}
+    /{file}
+      - POST      : Upload the image
+      - DELETE    : Delete the file
+
+/storage
+  /{folder}
+    - GET          : Get all the image
+    - POST         : Upload the image
+    - PUT          : Update the image
+    - Delete       : Delete the image
+
+/directory
+  - GET
+  - POST
+   /{id}:
+    - DELETE
+    - PUT 
+
+/notes
+  - GET           : Get all notes
+  /{id}:
+    - GET         : Get note for an id
+    - POST        : Add note for an id
+    - PUT         : Update note for an id
+    - Delete      : Delete note for an id
