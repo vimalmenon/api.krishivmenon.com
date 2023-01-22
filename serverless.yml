@@ -6,6 +6,7 @@ frameworkVersion: '3'
 plugins:
   - serverless-offline
   - serverless-plugin-typescript
+  - serverless-iam-roles-per-function
 
 custom:
   serverless-offline:
