@@ -7,6 +7,7 @@
     "deploy": "serverless deploy",
     "remove": "serverless remove",
     "local": "serverless offline",
+    "tsc": "tsc",
     "update": "ncu -u"
   },
   "repository": {
