@@ -6,7 +6,8 @@
   "scripts": {
     "deploy": "serverless deploy",
     "remove": "serverless remove",
-    "local": "serverless offline"
+    "local": "serverless offline",
+    "update": "ncu -u"
   },
   "repository": {
     "type": "git",
