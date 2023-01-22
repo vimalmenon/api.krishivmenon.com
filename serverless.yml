@@ -6,6 +6,10 @@ frameworkVersion: '3'
 plugins:
   - serverless-offline
 
+custom:
+  serverless-offline:
+    httpPort: 5000
+
 provider:
   name: aws
   runtime: nodejs14.x
