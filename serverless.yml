@@ -39,10 +39,6 @@ functions:
         Action:
           - s3:ListObject
         Resource: "*"
-      - Effect: Allow
-        Action:
-          - dynamodb:PutItem
-        Resource: "*"
   uploadToS3:
     handler: services/drive/handler.uploadToS3
     events:
@@ -53,6 +49,7 @@ functions:
       - Effect: "Allow"        
         Action:
           - s3:PutObject
+          - dynamodb:PutItem
         Resource: "*"
   updateS3File:
     handler: services/drive/handler.updateS3File
@@ -66,7 +63,7 @@ functions:
           - s3:ListObject
         Resource: "*"
   deleteFromS3:
-    handler: services/drive/handler.uploadToS3
+    handler: services/drive/handler.deleteFromS3
     events:
       - http:
           path: /drive/{folder}/{file}
