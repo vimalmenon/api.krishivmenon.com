@@ -1,17 +1,12 @@
-/upload
-  /{folder}
-    /{file}
-      - POST      : Upload the image
-      - DELETE    : Delete the file
-
-/storage
+/drive
   /{folder}
     - GET          : Get all the image
-    - POST         : Upload the image
-    - PUT          : Update the image
-    - Delete       : Delete the image
+    /{file}
+      - POST      : Upload the file
+      - DELETE    : Delete the file
+      - PUT       : Update the image data
 
-/directory
+/folders
   - GET
   - POST
    /{id}:

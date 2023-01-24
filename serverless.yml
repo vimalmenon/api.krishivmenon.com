@@ -7,19 +7,72 @@ plugins:
   - serverless-offline
   - serverless-plugin-typescript
   - serverless-iam-roles-per-function
+  - serverless-dotenv-plugin
 
 custom:
   serverless-offline:
     httpPort: 5000
 
+useDotenv: true
+
 provider:
   name: aws
   runtime: nodejs16.x
+  apiGateway:
+    binaryMediaTypes:
+      - 'application/pdf'
+      - 'image/*'
+  environment:
+    S3_BUCKET_NAME: ${env:S3_BUCKET_NAME}
+    DYNAMO_DB_Table: ${env:DYNAMO_DB_TABLE}
+    DB_KEY: ${env:DB_KEY}
 
 functions:
-  hello:
-    handler: services/handler.hello
+  getFilesFromS3:
+    handler: services/drive/handler.getFilesFromS3
     events:
       - http:
-          path: /
+          path: /drive/{folder}
           method: get
+    iamRoleStatements:
+      - Effect: "Allow"        
+        Action:
+          - s3:ListObject
+        Resource: "*"
+      - Effect: Allow
+        Action:
+          - dynamodb:PutItem
+        Resource: "*"
+  uploadToS3:
+    handler: services/drive/handler.uploadToS3
+    events:
+      - http:
+          path: /drive/{folder}/{file}
+          method: post
+    iamRoleStatements:
+      - Effect: "Allow"        
+        Action:
+          - s3:PutObject
+        Resource: "*"
+  updateS3File:
+    handler: services/drive/handler.updateS3File
+    events:
+      - http:
+          path: /drive/{folder}/{file}
+          method: put
+    iamRoleStatements:
+      - Effect: "Allow"        
+        Action:
+          - s3:ListObject
+        Resource: "*"
+  deleteFromS3:
+    handler: services/drive/handler.uploadToS3
+    events:
+      - http:
+          path: /drive/{folder}/{file}
+          method: delete
+    iamRoleStatements:
+      - Effect: "Allow"        
+        Action:
+          - s3:DeleteObject
+        Resource: "*"
