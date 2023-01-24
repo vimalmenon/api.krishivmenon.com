@@ -1,6 +1,6 @@
 org: vimalmenon
 app: api-krishivmenon
-service: api-krishivmenon
+service: api-km
 frameworkVersion: '3'
 
 plugins:
@@ -34,10 +34,12 @@ functions:
       - http:
           path: /drive/{folder}
           method: get
+          cors: true
     iamRoleStatements:
       - Effect: "Allow"        
         Action:
           - s3:ListObject
+          - dynamodb:Query
         Resource: "*"
   uploadToS3:
     handler: services/drive/handler.uploadToS3
@@ -45,6 +47,7 @@ functions:
       - http:
           path: /drive/{folder}/{file}
           method: post
+          cors: true
     iamRoleStatements:
       - Effect: "Allow"        
         Action:
@@ -57,6 +60,7 @@ functions:
       - http:
           path: /drive/{folder}/{file}
           method: put
+          cors: true
     iamRoleStatements:
       - Effect: "Allow"        
         Action:
@@ -68,8 +72,10 @@ functions:
       - http:
           path: /drive/{folder}/{file}
           method: delete
+          cors: true
     iamRoleStatements:
       - Effect: "Allow"        
         Action:
           - s3:DeleteObject
+          - dynamodb:DeleteItem
         Resource: "*"

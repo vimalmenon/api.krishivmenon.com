@@ -17,6 +17,10 @@ const appKey = `${DB_KEY}#FILE`;
 export const respondToSuccess = (data) => {
   return {
     statusCode: 200,
+    headers: {
+      "Access-Control-Allow-Origin": "*",
+      "Access-Control-Allow-Credentials": true,
+    },
     body: JSON.stringify(data),
   };
 };
@@ -24,6 +28,10 @@ export const respondToSuccess = (data) => {
 export const respondForError = (data) => {
   return {
     statusCode: 500,
+    headers: {
+      "Access-Control-Allow-Origin": "*",
+      "Access-Control-Allow-Credentials": true,
+    },
     body: JSON.stringify({
       message: data,
     }),
@@ -34,16 +42,36 @@ export const isValidFolder = (folder: string): boolean => {
   return SupportedFolder.includes(folder);
 };
 
+const transformResult = (items) => {
+  return items.map((item) => {
+    const result = {};
+    Object.keys(item).map((key) => {
+      result[key] = item[key]["S"];
+    });
+    return result;
+  });
+};
 export const getFilesFromS3 = async (event) => {
   const { folder } = event.pathParameters;
   if (!isValidFolder(folder)) {
     return respondForError("Not valid folder");
   }
+  const params = {
+    TableName: DYNAMO_DB_Table,
+    KeyConditionExpression: "#appKey = :appKey",
+    FilterExpression: "#path = :path",
+    ExpressionAttributeNames: {
+      "#appKey": "appKey",
+      "#path": "path",
+    },
+    ExpressionAttributeValues: {
+      ":appKey": { S: appKey },
+      ":path": { S: folder },
+    },
+  };
+  const result = await dynamoDB.query(params).promise();
   return respondToSuccess({
-    message: "Go Serverless v3.0! Your function executed successfully!",
-    S3_Bucket_Name,
-    DYNAMO_DB_Table,
-    DB_KEY,
+    result: transformResult(result.Items),
     uid: randomUUID(),
   });
 };
@@ -58,7 +86,7 @@ export const uploadToS3 = async (event) => {
     event.body.replace(/^data:image\/\w+;base64,/, ""),
     "base64"
   );
-  const ContentType = event.headers["Content-Type"];
+  const ContentType = event.headers["content-type"];
   const params = {
     Bucket: S3_Bucket_Name,
     Key: `${folder}/${file}`,
@@ -67,26 +95,26 @@ export const uploadToS3 = async (event) => {
   };
 
   try {
-    const result = await s3.putObject(params).promise();
-    await dynamoDB
+    const s3Result = await s3.putObject(params).promise();
+    const dbResult = await dynamoDB
       .putItem({
         TableName: DYNAMO_DB_Table,
         Item: {
-          appKey: appKey,
-          sortKey: `file#${file}`,
-          createdDate: new Date(),
-          updatedDate: new Date(),
-          path: folder,
-          type: ContentType,
-          label: file,
-          name: file,
+          appKey: { S: appKey },
+          sortKey: { S: `file#${file}` },
+          createdDate: { S: new Date().toISOString() },
+          updatedDate: { S: new Date().toISOString() },
+          path: { S: folder },
+          type: { S: ContentType || "" },
+          label: { S: file },
+          name: { S: file },
         },
       })
       .promise();
+    console.log(dbResult, s3Result);
     return respondToSuccess({
       folder,
       file,
-      ...result,
     });
   } catch (error) {
     return respondForError(error.message);
@@ -98,25 +126,29 @@ export const deleteFromS3 = async (event) => {
   if (!isValidFolder(folder)) {
     return respondForError("Not valid folder");
   }
-  const result = await s3
-    .deleteObject({
-      Bucket: S3_Bucket_Name,
-      Key: `${folder}/${file}`,
-    })
-    .promise();
 
-  var params = {
-    TableName: DYNAMO_DB_Table,
-    Key: {
-      appKey: appKey,
-      sortKey: `file#${file}`,
-    },
-  };
-  await dynamoDB.deleteItem(params).promise();
-  return respondToSuccess({
-    message: "this is delete from S3",
-    ...result,
-  });
+  try {
+    const result = await s3
+      .deleteObject({
+        Bucket: S3_Bucket_Name,
+        Key: `${folder}/${file}`,
+      })
+      .promise();
+    const params = {
+      TableName: DYNAMO_DB_Table,
+      Key: {
+        appKey: appKey,
+        sortKey: `file#${file}`,
+      },
+    };
+    await dynamoDB.deleteItem(params).promise();
+    return respondToSuccess({
+      message: "this is delete from S3",
+      ...result,
+    });
+  } catch (error) {
+    return respondForError(error.message);
+  }
 };
 
 export const updateS3File = async (event) => {
@@ -124,7 +156,30 @@ export const updateS3File = async (event) => {
   if (!isValidFolder(folder)) {
     return respondForError("Not valid folder");
   }
-  return respondToSuccess({
-    message: "Updated the file metadata from S3",
-  });
+  try {
+    const params = {
+      TableName: DYNAMO_DB_Table,
+      Key: {
+        appKey: appKey,
+        sortKey: `file#${file}`,
+      },
+      UpdateExpression: `set #updatedDate=:updatedDate , #label=:label`,
+      ExpressionAttributeValues: {
+        ":updatedDate": new Date().toISOString(),
+        ":lable": event.body.label,
+      },
+      ExpressionAttributeNames: {
+        "#updatedDate": "updatedDate",
+        "#label": "label",
+      },
+      ReturnValues: "UPDATED_NEW",
+    };
+    const result = await dynamoDB.update(params).promise();
+    return respondToSuccess({
+      message: "Updated the file metadata from S3",
+      result,
+    });
+  } catch (error) {
+    respondForError(error.message);
+  }
 };
