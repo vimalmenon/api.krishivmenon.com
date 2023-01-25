@@ -1,8 +1,8 @@
 "use strict";
 
 const S3 = require("aws-sdk/clients/s3");
-const { randomUUID } = require("crypto");
 const DynamoDb = require("aws-sdk/clients/dynamodb");
+const { randomUUID } = require("crypto");
 
 const s3 = new S3();
 const dynamoDB = new DynamoDb();
@@ -137,8 +137,8 @@ export const deleteFromS3 = async (event) => {
     const params = {
       TableName: DYNAMO_DB_Table,
       Key: {
-        appKey: appKey,
-        sortKey: `file#${file}`,
+        appKey: { S: appKey },
+        sortKey: { S: `file#${file}` },
       },
     };
     await dynamoDB.deleteItem(params).promise();

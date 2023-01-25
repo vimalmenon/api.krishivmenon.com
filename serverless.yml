@@ -28,6 +28,7 @@ provider:
     DB_KEY: ${env:DB_KEY}
 
 functions:
+  # drive Apis
   getFilesFromS3:
     handler: services/drive/handler.getFilesFromS3
     events:
@@ -79,3 +80,32 @@ functions:
           - s3:DeleteObject
           - dynamodb:DeleteItem
         Resource: "*"
+  # folders api
+
+  # notes api
+  getNotes:
+    handler: services/notes/handler.getNotes
+    events:
+      - http:
+          path: /notes
+          method: get
+          cors: true
+    iamRoleStatements:
+      - Effect: "Allow"        
+        Action:
+          - dynamodb:Query
+        Resource: "*"
+  getNote:
+    handler: services/notes/handler.getNote
+    events:
+      - http:
+          path: /notes/{id}
+          method: get
+          cors: true
+    iamRoleStatements:
+      - Effect: "Allow"        
+        Action:
+          - dynamodb:Query
+        Resource: "*"
+
+
