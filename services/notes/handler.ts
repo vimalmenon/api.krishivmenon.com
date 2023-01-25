@@ -111,6 +111,25 @@ export const deleteNote = async (event) => {
 
 export const updateNote = async (event) => {
   const { id } = event.pathParameters;
-
+  const params = {
+    TableName: DYNAMO_DB_Table,
+    Key: {
+      appKey: appKey,
+      sortKey: `note#${id}`,
+    },
+    UpdateExpression: `set #title=:title , #content=:content, #updatedDate=:updatedDate`,
+    ExpressionAttributeValues: {
+      ":updatedDate": new Date().toISOString(),
+      ":content": event.body.content,
+      ":title": event.body.title,
+    },
+    ExpressionAttributeNames: {
+      "#updatedDate": "updatedDate",
+      "#content": "content",
+      "#title": "title",
+    },
+    ReturnValues: "UPDATED_NEW",
+  };
+  const result = await dynamoDB.update(params).promise();
   return respondToSuccess({ message: "this is vimal menon" });
 };

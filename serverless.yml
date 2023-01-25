@@ -131,4 +131,15 @@ functions:
         Action:
           - dynamodb:DeleteItem
         Resource: "*"
-
+  updateNote:
+    handler: services/notes/handler.updateNote
+    events:
+      - http:
+          path: /notes/{id}
+          method: put
+          cors: true
+    iamRoleStatements:
+      - Effect: "Allow"
+        Action:
+          - dynamodb:UpdateItem
+        Resource: "*"
