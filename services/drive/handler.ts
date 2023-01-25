@@ -174,7 +174,7 @@ export const updateS3File = async (event) => {
       },
       ReturnValues: "UPDATED_NEW",
     };
-    const result = await dynamoDB.update(params).promise();
+    const result = await dynamoDB.updateItem(params).promise();
     return respondToSuccess({
       message: "Updated the file metadata from S3",
       result,
