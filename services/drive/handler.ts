@@ -153,6 +153,7 @@ export const deleteFromS3 = async (event) => {
 
 export const updateS3File = async (event) => {
   const { folder, file } = event.pathParameters;
+  const body = JSON.parse(event.body);
   if (!isValidFolder(folder)) {
     return respondForError("Not valid folder");
   }
@@ -160,13 +161,13 @@ export const updateS3File = async (event) => {
     const params = {
       TableName: DYNAMO_DB_Table,
       Key: {
-        appKey: appKey,
-        sortKey: `file#${file}`,
+        appKey: { S: appKey },
+        sortKey: { S: `file#${file}` },
       },
       UpdateExpression: `set #updatedDate=:updatedDate , #label=:label`,
       ExpressionAttributeValues: {
-        ":updatedDate": new Date().toISOString(),
-        ":lable": event.body.label,
+        ":updatedDate": { S: new Date().toISOString() },
+        ":lable": { S: body.label },
       },
       ExpressionAttributeNames: {
         "#updatedDate": "updatedDate",
