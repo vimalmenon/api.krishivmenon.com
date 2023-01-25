@@ -105,7 +105,19 @@ functions:
     iamRoleStatements:
       - Effect: "Allow"        
         Action:
-          - dynamodb:Query
+          - dynamodb:GetItem
+        Resource: "*"
+  addNote:
+    handler: services/notes/handler.addNote
+    events:
+      - http:
+          path: /notes
+          method: post
+          cors: true
+    iamRoleStatements:
+      - Effect: "Allow"
+        Action:
+          - dynamodb:PutItem
         Resource: "*"
 
 
