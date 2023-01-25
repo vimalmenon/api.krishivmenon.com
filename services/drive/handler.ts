@@ -1,63 +1,27 @@
 "use strict";
 
-const S3 = require("aws-sdk/clients/s3");
-const DynamoDb = require("aws-sdk/clients/dynamodb");
-const { randomUUID } = require("crypto");
+import { DynamoDB, S3 } from "aws-sdk";
+import { randomUUID } from "crypto";
+import { respondForError, respondToSuccess } from "../common/response";
+import { DYNAMO_DB_Table, DB_KEY, S3_BUCKET_NAME } from "../common/constants";
 
 const s3 = new S3();
-const dynamoDB = new DynamoDb();
-
-const S3_Bucket_Name = process.env.S3_BUCKET_NAME;
-const DYNAMO_DB_Table = process.env.DYNAMO_DB_Table;
-const DB_KEY = process.env.DB_KEY;
+const dynamoDB = new DynamoDB.DocumentClient();
 
 const SupportedFolder = ["images", "files", "videos"];
 const appKey = `${DB_KEY}#FILE`;
-
-export const respondToSuccess = (data) => {
-  return {
-    statusCode: 200,
-    headers: {
-      "Access-Control-Allow-Origin": "*",
-      "Access-Control-Allow-Credentials": true,
-    },
-    body: JSON.stringify(data),
-  };
-};
-
-export const respondForError = (data) => {
-  return {
-    statusCode: 500,
-    headers: {
-      "Access-Control-Allow-Origin": "*",
-      "Access-Control-Allow-Credentials": true,
-    },
-    body: JSON.stringify({
-      message: data,
-    }),
-  };
-};
 
 export const isValidFolder = (folder: string): boolean => {
   return SupportedFolder.includes(folder);
 };
 
-const transformResult = (items) => {
-  return items.map((item) => {
-    const result = {};
-    Object.keys(item).map((key) => {
-      result[key] = item[key]["S"];
-    });
-    return result;
-  });
-};
 export const getFilesFromS3 = async (event) => {
   const { folder } = event.pathParameters;
   if (!isValidFolder(folder)) {
     return respondForError("Not valid folder");
   }
   const params = {
-    TableName: DYNAMO_DB_Table,
+    TableName: DYNAMO_DB_Table || "",
     KeyConditionExpression: "#appKey = :appKey",
     FilterExpression: "#path = :path",
     ExpressionAttributeNames: {
@@ -65,13 +29,13 @@ export const getFilesFromS3 = async (event) => {
       "#path": "path",
     },
     ExpressionAttributeValues: {
-      ":appKey": { S: appKey },
-      ":path": { S: folder },
+      ":appKey": appKey,
+      ":path": folder,
     },
   };
   const result = await dynamoDB.query(params).promise();
   return respondToSuccess({
-    result: transformResult(result.Items),
+    result: result.Items,
     uid: randomUUID(),
   });
 };
@@ -88,7 +52,7 @@ export const uploadToS3 = async (event) => {
   );
   const ContentType = event.headers["content-type"];
   const params = {
-    Bucket: S3_Bucket_Name,
+    Bucket: S3_BUCKET_NAME || "",
     Key: `${folder}/${file}`,
     Body: buffer,
     ContentType,
@@ -97,8 +61,8 @@ export const uploadToS3 = async (event) => {
   try {
     const s3Result = await s3.putObject(params).promise();
     const dbResult = await dynamoDB
-      .putItem({
-        TableName: DYNAMO_DB_Table,
+      .put({
+        TableName: DYNAMO_DB_Table || "",
         Item: {
           appKey: { S: appKey },
           sortKey: { S: `file#${file}` },
@@ -130,18 +94,18 @@ export const deleteFromS3 = async (event) => {
   try {
     const result = await s3
       .deleteObject({
-        Bucket: S3_Bucket_Name,
+        Bucket: S3_BUCKET_NAME || "",
         Key: `${folder}/${file}`,
       })
       .promise();
     const params = {
-      TableName: DYNAMO_DB_Table,
+      TableName: DYNAMO_DB_Table || "",
       Key: {
-        appKey: { S: appKey },
-        sortKey: { S: `file#${file}` },
+        appKey: appKey,
+        sortKey: `file#${file}`,
       },
     };
-    await dynamoDB.deleteItem(params).promise();
+    await dynamoDB.delete(params).promise();
     return respondToSuccess({
       message: "this is delete from S3",
       ...result,
@@ -159,15 +123,15 @@ export const updateS3File = async (event) => {
   }
   try {
     const params = {
-      TableName: DYNAMO_DB_Table,
+      TableName: DYNAMO_DB_Table || "",
       Key: {
-        appKey: { S: appKey },
-        sortKey: { S: `file#${file}` },
+        appKey: appKey,
+        sortKey: `file#${file}`,
       },
       UpdateExpression: `set #updatedDate=:updatedDate , #label=:label`,
       ExpressionAttributeValues: {
-        ":updatedDate": { S: new Date().toISOString() },
-        ":lable": { S: body.label },
+        ":updatedDate": new Date().toISOString(),
+        ":lable": body.label,
       },
       ExpressionAttributeNames: {
         "#updatedDate": "updatedDate",
@@ -175,7 +139,7 @@ export const updateS3File = async (event) => {
       },
       ReturnValues: "UPDATED_NEW",
     };
-    const result = await dynamoDB.updateItem(params).promise();
+    const result = await dynamoDB.update(params).promise();
     return respondToSuccess({
       message: "Updated the file metadata from S3",
       result,
