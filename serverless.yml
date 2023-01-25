@@ -119,5 +119,16 @@ functions:
         Action:
           - dynamodb:PutItem
         Resource: "*"
-
+  deleteNote:
+    handler: services/notes/handler.deleteNote
+    events:
+      - http:
+          path: /notes/{id}
+          method: delete
+          cors: true
+    iamRoleStatements:
+      - Effect: "Allow"
+        Action:
+          - dynamodb:DeleteItem
+        Resource: "*"
 

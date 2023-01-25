@@ -8,14 +8,16 @@ const DB_KEY = process.env.DB_KEY;
 
 const appKey = `${DB_KEY}#NOTE`;
 
-const transformResult = (items) => {
-  return items.map((item) => {
-    const result = {};
-    Object.keys(item).map((key) => {
-      result[key] = item[key]["S"];
-    });
-    return result;
+const transformItem = (item) => {
+  const result = {};
+  Object.keys(item).map((key) => {
+    result[key] = item[key]["S"];
   });
+  return result;
+};
+
+const transformItems = (items) => {
+  return items.map((item) => transformItem(item));
 };
 
 export const respondToSuccess = (data) => {
@@ -54,7 +56,7 @@ export const getNotes = async () => {
     },
   };
   const result = await dynamoDB.query(params).promise();
-  return respondToSuccess({ notes: transformResult(result.Items) });
+  return respondToSuccess({ notes: transformItems(result.Items) });
 };
 
 export const addNote = async (event) => {
@@ -90,17 +92,25 @@ export const getNote = async (event) => {
     },
   };
   const result = await dynamoDB.getItem(params).promise();
-
-  return respondToSuccess({ message: "this is vimal menon", result });
-};
-export const createFolder = async () => {
-  return null;
+  const note = transformItem(result.Item);
+  return respondToSuccess({ note });
 };
 
-export const updateFolder = async () => {
-  return null;
+export const deleteNote = async (event) => {
+  const { id } = event.pathParameters;
+  const params = {
+    TableName: DYNAMO_DB_Table,
+    Key: {
+      appKey: { S: appKey },
+      sortKey: { S: `note#${id}` },
+    },
+  };
+  await dynamoDB.deleteItem(params).promise();
+  return respondToSuccess({ message: `${id} note deleted` });
 };
 
-export const deleteFolder = async () => {
-  return null;
+export const updateNote = async (event) => {
+  const { id } = event.pathParameters;
+
+  return respondToSuccess({ message: "this is vimal menon" });
 };
