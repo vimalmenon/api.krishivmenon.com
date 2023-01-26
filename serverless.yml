@@ -81,7 +81,54 @@ functions:
           - dynamodb:DeleteItem
         Resource: "*"
   # folders api
-
+  getByParentFolder:
+    handler: services/folders/getByParentFolder.handler
+    events:
+      - http:
+          path: /folders/{parentId}
+          method: get
+          cors: true
+    iamRoleStatements:
+      - Effect: "Allow"        
+        Action:
+          - dynamodb:GetItem
+        Resource: "*"
+  addFolder:
+    handler: services/folders/createFolder.handler
+    events:
+      - http:
+          path: /folders
+          method: post
+          cors: true
+    iamRoleStatements:
+      - Effect: "Allow"
+        Action:
+          - dynamodb:PutItem
+        Resource: "*"
+  deleteFolder:
+    handler: services/folders/deleteFolder.handler
+    events:
+      - http:
+          path: /folders/{id}
+          method: delete
+          cors: true
+    iamRoleStatements:
+      - Effect: "Allow"
+        Action:
+          - dynamodb:DeleteItem
+        Resource: "*"
+  updateFolder:
+    handler: services/folders/updateFolder.handler
+    events:
+      - http:
+          path: /folders/{id}
+          method: put
+          cors: true
+    iamRoleStatements:
+      - Effect: "Allow"
+        Action:
+          - dynamodb:UpdateItem
+        Resource: "*"
   # notes api
   getNotes:
     handler: services/notes/getNotes.handler

@@ -7,11 +7,12 @@
       - PUT       : Update the image data
 
 /folders
-  - GET
   - POST
-   /{id}:
+  /{id}:
     - DELETE
-    - PUT 
+    - PUT
+  /{parentId}:
+    -GET
 
 /notes
   - GET           : Get all notes
