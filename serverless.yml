@@ -68,7 +68,7 @@ functions:
           - s3:ListObject
         Resource: "*"
   deleteFromS3:
-    handler: services/drive/handler.deleteFromS3
+    handler: services/drive/deleteNote.handler
     events:
       - http:
           path: /drive/{folder}/{file}
@@ -84,7 +84,7 @@ functions:
 
   # notes api
   getNotes:
-    handler: services/notes/handler.getNotes
+    handler: services/notes/getNotes.handler
     events:
       - http:
           path: /notes
@@ -96,7 +96,7 @@ functions:
           - dynamodb:Query
         Resource: "*"
   getNote:
-    handler: services/notes/handler.getNote
+    handler: services/notes/getNote.handler
     events:
       - http:
           path: /notes/{id}
