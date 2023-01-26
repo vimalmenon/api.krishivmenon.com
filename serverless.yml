@@ -68,7 +68,7 @@ functions:
           - s3:ListObject
         Resource: "*"
   deleteFromS3:
-    handler: services/drive/deleteNote.handler
+    handler: services/drive/handler.deleteFromS3
     events:
       - http:
           path: /drive/{folder}/{file}
@@ -108,7 +108,7 @@ functions:
           - dynamodb:GetItem
         Resource: "*"
   addNote:
-    handler: services/notes/handler.addNote
+    handler: services/notes/addNote.handler
     events:
       - http:
           path: /notes
@@ -120,7 +120,7 @@ functions:
           - dynamodb:PutItem
         Resource: "*"
   deleteNote:
-    handler: services/notes/handler.deleteNote
+    handler: services/notes/deleteNote.handler
     events:
       - http:
           path: /notes/{id}
@@ -132,7 +132,7 @@ functions:
           - dynamodb:DeleteItem
         Resource: "*"
   updateNote:
-    handler: services/notes/handler.updateNote
+    handler: services/notes/updateNote.handler
     events:
       - http:
           path: /notes/{id}
