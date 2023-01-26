@@ -16,7 +16,16 @@ export interface IFile extends IBaseDB {
 
 export interface INote extends IBaseDB {
   uid: string;
-  title:string;
+  title: string;
   metadata?: Record<string, string>;
   content: string;
+}
+
+export interface IFolder extends IBaseDB {
+  name: string;
+  metadata?: Record<string, string>;
+  label: string;
+  path: string;
+  type: string;
+  content: string[];
 }
