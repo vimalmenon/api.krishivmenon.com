@@ -85,7 +85,7 @@ functions:
     handler: services/folders/getByParentFolder.handler
     events:
       - http:
-          path: /folders/{parentId}
+          path: /folders/{id}
           method: get
           cors: true
     iamRoleStatements:

@@ -7,6 +7,7 @@ export interface IBaseDB {
 }
 
 export interface IFile extends IBaseDB {
+  id: string;
   name: string;
   metadata?: Record<string, string>;
   label: string;
@@ -15,17 +16,18 @@ export interface IFile extends IBaseDB {
 }
 
 export interface INote extends IBaseDB {
-  uid: string;
+  id: string;
   title: string;
   metadata?: Record<string, string>;
   content: string;
 }
 
 export interface IFolder extends IBaseDB {
+  id: string;
   name: string;
   metadata?: Record<string, string>;
   label: string;
-  path: string;
+  parent: string;
   type: string;
   content: string[];
 }

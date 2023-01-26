@@ -12,8 +12,9 @@ import middy from "@middy/core";
 
 export const handler = middy(async (event: APIGatewayEvent) => {
   try {
-    const note = event.body as any;
+    const folder = event.body as any;
     const uid = randomUUID();
+
     const dbResult = await dynamoDB
       .put({
         TableName: DYNAMO_DB_Table || "",
@@ -23,8 +24,12 @@ export const handler = middy(async (event: APIGatewayEvent) => {
           createdDate: new Date().toISOString(),
           updatedDate: new Date().toISOString(),
           id: uid,
-          title: note.title || "",
-          content: note.content || "",
+          name: uid,
+          label: folder.name || "",
+          parent: folder.parent || "",
+          metadata: {},
+          type: "folder",
+          content: [],
         },
       })
       .promise();

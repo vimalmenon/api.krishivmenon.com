@@ -14,13 +14,19 @@ export const handler = middy(async (event: APIGatewayEvent) => {
   try {
     const params = {
       TableName: DYNAMO_DB_Table || "",
-      Key: {
-        appKey: appKey,
-        sortKey: `folder#${id}`,
+      KeyConditionExpression: "#appKey = :appKey",
+      FilterExpression: "#parent = :parent",
+      ExpressionAttributeNames: {
+        "#appKey": "appKey",
+        "#parent": "parent",
+      },
+      ExpressionAttributeValues: {
+        ":appKey": appKey,
+        ":parent": id,
       },
     };
-    const result = await dynamoDB.get(params).promise();
-    return respondToSuccess({ note: result.Item });
+    const result = await dynamoDB.query(params).promise();
+    return respondToSuccess({ folder: result.Items });
   } catch (error) {
     respondForError({ message: error.message });
   }
