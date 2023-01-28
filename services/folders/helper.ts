@@ -3,7 +3,7 @@ import { dynamoDB } from "../common/awsService";
 
 const appKey = `${DB_KEY}#FOLDER`;
 
-export const getFoldersByParent = async (parentId: string) => {
+export const getFoldersByParent = (parentId: string) => {
   const params = {
     TableName: DYNAMO_DB_Table || "",
     KeyConditionExpression: "#appKey = :appKey",
@@ -17,7 +17,16 @@ export const getFoldersByParent = async (parentId: string) => {
       ":parent": parentId,
     },
   };
-  return await dynamoDB.query(params).promise();
+  return dynamoDB.query(params).promise();
 };
 
-export const getFolderById = (id: string) => {};
+export const getFolderById = (id: string) => {
+  const params = {
+    TableName: DYNAMO_DB_Table || "",
+    Key: {
+      appKey: appKey,
+      sortKey: `folder#${id}`,
+    },
+  };
+  return dynamoDB.get(params).promise();
+};

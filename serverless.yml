@@ -104,6 +104,7 @@ functions:
       - Effect: "Allow"
         Action:
           - dynamodb:PutItem
+          - dynamodb:Query
         Resource: "*"
   deleteFolder:
     handler: services/folders/deleteFolder.handler
@@ -116,6 +117,7 @@ functions:
       - Effect: "Allow"
         Action:
           - dynamodb:DeleteItem
+          - dynamodb:Query
         Resource: "*"
   updateFolder:
     handler: services/folders/updateFolder.handler

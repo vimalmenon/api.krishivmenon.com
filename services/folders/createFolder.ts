@@ -16,7 +16,7 @@ export const handler = middy(async (event: APIGatewayEvent) => {
     const folder = event.body as any;
     const uid = randomUUID();
 
-    const dbResult = await dynamoDB
+    await dynamoDB
       .put({
         TableName: DYNAMO_DB_Table || "",
         Item: {
@@ -27,6 +27,7 @@ export const handler = middy(async (event: APIGatewayEvent) => {
           id: uid,
           label: folder.label || "",
           parent: folder.parent || "",
+          childNode: 0,
           metadata: {},
           content: [],
         },
