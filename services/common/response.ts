@@ -1,14 +1,20 @@
 export class BaseResponse {
   public message: string = "Success";
-  public data;
+  public data = null;
   public statusCode = 200;
   public code = 0;
-  constructor(data) {
-    this.data = data;
-  }
+
   public forError = (message: string = "Error") => {
     this.statusCode = 500;
     this.message = message;
+    return this;
+  };
+  public forSuccessMessage = (message: string) => {
+    this.message = message;
+    return this;
+  };
+  public setData = (data) => {
+    this.data = data;
     return this;
   };
   private getBody = () => {
@@ -39,7 +45,7 @@ export const respondToSuccess = (data) => {
       "Access-Control-Allow-Origin": "*",
       "Access-Control-Allow-Credentials": true,
     },
-    body: JSON.stringify(new BaseResponse(data)),
+    body: JSON.stringify(data),
   };
 };
 
@@ -51,6 +57,6 @@ export const respondForError = (data) => {
       "Access-Control-Allow-Credentials": true,
       "Content-Type": "application/json",
     },
-    body: JSON.stringify(new BaseResponse(null).forError(data)),
+    body: JSON.stringify(data),
   };
 };

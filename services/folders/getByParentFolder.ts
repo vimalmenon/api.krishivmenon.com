@@ -1,33 +1,20 @@
-import { respondForError, respondToSuccess } from "../common/response";
-import { DYNAMO_DB_Table, DB_KEY } from "../common/constants";
-import { dynamoDB } from "../common/awsService";
-
+import middy from "@middy/core";
 import jsonBodyParser from "@middy/http-json-body-parser";
 import { APIGatewayEvent, APIGatewayProxyResult } from "aws-lambda";
 
-const appKey = `${DB_KEY}#FOLDER`;
+import { BaseResponse } from "../common/response";
+import { DB_KEY } from "../common/constants";
+import { getFoldersByParent } from "./helper";
 
-import middy from "@middy/core";
+const appKey = `${DB_KEY}#FOLDER`;
 
 export const handler = middy(async (event: APIGatewayEvent) => {
   const id = event.pathParameters?.id;
+  const response = new BaseResponse();
   try {
-    const params = {
-      TableName: DYNAMO_DB_Table || "",
-      KeyConditionExpression: "#appKey = :appKey",
-      FilterExpression: "#parent = :parent",
-      ExpressionAttributeNames: {
-        "#appKey": "appKey",
-        "#parent": "parent",
-      },
-      ExpressionAttributeValues: {
-        ":appKey": appKey,
-        ":parent": id,
-      },
-    };
-    const result = await dynamoDB.query(params).promise();
-    return respondToSuccess(result.Items);
+    const result = await getFoldersByParent(id || "");
+    return response.setData(result.Items).response();
   } catch (error) {
-    return respondForError({ message: error.message });
+    return response.forError(error.message).response();
   }
 }).use(jsonBodyParser());

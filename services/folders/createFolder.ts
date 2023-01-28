@@ -1,16 +1,17 @@
-import { randomUUID } from "crypto";
-import { respondForError, respondToSuccess } from "../common/response";
-import { DYNAMO_DB_Table, DB_KEY } from "../common/constants";
-import { dynamoDB } from "../common/awsService";
-
+import middy from "@middy/core";
 import jsonBodyParser from "@middy/http-json-body-parser";
 import { APIGatewayEvent, APIGatewayProxyResult } from "aws-lambda";
+import { randomUUID } from "crypto";
 
-import middy from "@middy/core";
+import { BaseResponse } from "../common/response";
+import { DYNAMO_DB_Table, DB_KEY } from "../common/constants";
+import { dynamoDB } from "../common/awsService";
+import { getFoldersByParent } from "./helper";
 
 const appKey = `${DB_KEY}#FOLDER`;
 
 export const handler = middy(async (event: APIGatewayEvent) => {
+  const response = new BaseResponse();
   try {
     const folder = event.body as any;
     const uid = randomUUID();
@@ -31,11 +32,9 @@ export const handler = middy(async (event: APIGatewayEvent) => {
         },
       })
       .promise();
-    return respondToSuccess({
-      id: uid,
-      dbResult,
-    });
+    const result = await getFoldersByParent(folder.parent);
+    return response.setData(result.Items).response();
   } catch (error) {
-    return respondForError({ message: error.message });
+    return response.forError(error.message).response();
   }
 }).use(jsonBodyParser());

@@ -1,4 +1,4 @@
-import { respondForError, respondToSuccess } from "../common/response";
+import { BaseResponse } from "../common/response";
 import { DYNAMO_DB_Table, DB_KEY } from "../common/constants";
 import { dynamoDB } from "../common/awsService";
 
@@ -11,6 +11,7 @@ import middy from "@middy/core";
 
 export const handler = middy(async (event: APIGatewayEvent) => {
   const id = event.pathParameters?.id;
+  const response = new BaseResponse();
   try {
     const params = {
       TableName: DYNAMO_DB_Table || "",
@@ -20,8 +21,8 @@ export const handler = middy(async (event: APIGatewayEvent) => {
       },
     };
     const result = await dynamoDB.get(params).promise();
-    return respondToSuccess({ note: result.Item });
+    return response.setData(result.Item).response();
   } catch (error) {
-    return respondForError({ message: error.message });
+    return response.forError(error.message).response();
   }
 }).use(jsonBodyParser());
