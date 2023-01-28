@@ -21,3 +21,9 @@
     - POST        : Add note for an id
     - PUT         : Update note for an id
     - Delete      : Delete note for an id
+
+Response code
+code 0 : No message
+code 1 : show Success
+code 2 : show Error
+code 3 : show both

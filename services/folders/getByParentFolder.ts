@@ -26,7 +26,7 @@ export const handler = middy(async (event: APIGatewayEvent) => {
       },
     };
     const result = await dynamoDB.query(params).promise();
-    return respondToSuccess({ folder: result.Items });
+    return respondToSuccess(result.Items);
   } catch (error) {
     return respondForError({ message: error.message });
   }
