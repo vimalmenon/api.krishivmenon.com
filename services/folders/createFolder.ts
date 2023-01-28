@@ -6,9 +6,9 @@ import { dynamoDB } from "../common/awsService";
 import jsonBodyParser from "@middy/http-json-body-parser";
 import { APIGatewayEvent, APIGatewayProxyResult } from "aws-lambda";
 
-const appKey = `${DB_KEY}#NOTE`;
-
 import middy from "@middy/core";
+
+const appKey = `${DB_KEY}#FOLDER`;
 
 export const handler = middy(async (event: APIGatewayEvent) => {
   try {
@@ -24,11 +24,9 @@ export const handler = middy(async (event: APIGatewayEvent) => {
           createdDate: new Date().toISOString(),
           updatedDate: new Date().toISOString(),
           id: uid,
-          name: uid,
-          label: folder.name || "",
+          label: folder.label || "",
           parent: folder.parent || "",
           metadata: {},
-          type: "folder",
           content: [],
         },
       })
@@ -38,6 +36,6 @@ export const handler = middy(async (event: APIGatewayEvent) => {
       dbResult,
     });
   } catch (error) {
-    respondForError({ message: error.message });
+    return respondForError({ message: error.message });
   }
 }).use(jsonBodyParser());

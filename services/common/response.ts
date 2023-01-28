@@ -2,6 +2,7 @@ export const respondToSuccess = (data) => {
   return {
     statusCode: 200,
     headers: {
+      'Content-Type': 'application/json',
       "Access-Control-Allow-Origin": "*",
       "Access-Control-Allow-Credentials": true,
     },
@@ -15,6 +16,7 @@ export const respondForError = (data) => {
     headers: {
       "Access-Control-Allow-Origin": "*",
       "Access-Control-Allow-Credentials": true,
+      'Content-Type': 'application/json'
     },
     body: JSON.stringify({
       message: data,

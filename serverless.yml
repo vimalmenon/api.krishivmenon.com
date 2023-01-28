@@ -85,13 +85,13 @@ functions:
     handler: services/folders/getByParentFolder.handler
     events:
       - http:
-          path: /folders/{id}
+          path: /folders/parent/{id}
           method: get
           cors: true
     iamRoleStatements:
       - Effect: "Allow"        
         Action:
-          - dynamodb:GetItem
+          - dynamodb:Query
         Resource: "*"
   addFolder:
     handler: services/folders/createFolder.handler

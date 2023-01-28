@@ -28,6 +28,6 @@ export const handler = middy(async (event: APIGatewayEvent) => {
     const result = await dynamoDB.query(params).promise();
     return respondToSuccess({ folder: result.Items });
   } catch (error) {
-    respondForError({ message: error.message });
+    return respondForError({ message: error.message });
   }
 }).use(jsonBodyParser());

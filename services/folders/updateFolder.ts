@@ -39,6 +39,6 @@ export const handler = middy(async (event: APIGatewayEvent) => {
     const result = await dynamoDB.update(params).promise();
     return respondToSuccess({ message: "this is vimal menon", result });
   } catch (error) {
-    respondForError({ message: error.message });
+    return respondForError({ message: error.message });
   }
 }).use(jsonBodyParser());

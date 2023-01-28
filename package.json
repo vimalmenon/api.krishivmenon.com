@@ -21,7 +21,7 @@
   },
   "homepage": "https://github.com/vimalmenon/api.krishivmenon.com#readme",
   "devDependencies": {
-    "@types/aws-lambda": "^8.10.109",
+    "@types/aws-lambda": "^8.10.110",
     "serverless-dotenv-plugin": "^4.0.2",
     "serverless-iam-roles-per-function": "^3.2.0",
     "serverless-offline": "^12.0.4",
@@ -31,6 +31,7 @@
   "dependencies": {
     "@middy/core": "^4.2.1",
     "@middy/http-json-body-parser": "^4.2.1",
-    "aws-sdk": "^2.1302.0"
+    "aws-sdk": "^2.1304.0",
+    "serverless": "^3.27.0"
   }
 }

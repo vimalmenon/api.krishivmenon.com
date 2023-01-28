@@ -23,6 +23,6 @@ export const handler = middy(async (event) => {
     const result = await dynamoDB.query(params).promise();
     return respondToSuccess({ notes: result.Items });
   } catch (error) {
-    respondForError({ message: error.message });
+    return respondForError({ message: error.message });
   }
 }).use(jsonBodyParser());

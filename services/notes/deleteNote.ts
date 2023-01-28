@@ -22,6 +22,6 @@ export const handler = middy(async (event: APIGatewayEvent) => {
     await dynamoDB.delete(params).promise();
     return respondToSuccess({ message: `${id} note deleted` });
   } catch (error) {
-    respondForError({ message: error.message });
+    return respondForError({ message: error.message });
   }
 }).use(jsonBodyParser());

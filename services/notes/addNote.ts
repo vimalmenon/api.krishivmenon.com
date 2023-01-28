@@ -33,6 +33,6 @@ export const handler = middy(async (event: APIGatewayEvent) => {
       dbResult,
     });
   } catch (error) {
-    respondForError({ message: error.message });
+    return respondForError({ message: error.message });
   }
 }).use(jsonBodyParser());
