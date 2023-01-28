@@ -118,6 +118,7 @@ functions:
         Action:
           - dynamodb:DeleteItem
           - dynamodb:Query
+          - dynamodb:GetItem
         Resource: "*"
   updateFolder:
     handler: services/folders/updateFolder.handler
