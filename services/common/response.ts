@@ -3,7 +3,9 @@ export class BaseResponse {
   public data = null;
   public statusCode = 200;
   public code = 0;
-
+  constructor(code = "0") {
+    this.code = parseInt(code);
+  }
   public forError = (message: string = "Error") => {
     this.statusCode = 500;
     this.message = message;

@@ -132,6 +132,19 @@ functions:
         Action:
           - dynamodb:UpdateItem
         Resource: "*"
+  updateFolderData:
+    handler: services/folders/updateFolderData.handler
+    events:
+      - http:
+          path: /folders/folder_data/{id}
+          method: put
+          cors: true
+    iamRoleStatements:
+      - Effect: "Allow"
+        Action:
+          - dynamodb:UpdateItem
+          - dynamodb:Query
+        Resource: "*"
   # notes api
   getNotes:
     handler: services/notes/getNotes.handler

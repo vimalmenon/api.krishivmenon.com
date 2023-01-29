@@ -11,7 +11,8 @@ import { getFoldersByParent } from "./helper";
 const appKey = `${DB_KEY}#FOLDER`;
 
 export const handler = middy(async (event: APIGatewayEvent) => {
-  const response = new BaseResponse();
+  const { code } = event.queryStringParameters || {};
+  const response = new BaseResponse(code);
   try {
     const folder = event.body as any;
     const uid = randomUUID();

@@ -12,8 +12,8 @@ const appKey = `${DB_KEY}#FOLDER`;
 
 export const handler = middy(async (event: APIGatewayEvent) => {
   const id = event.pathParameters?.id;
-  const response = new BaseResponse();
-
+  const { code } = event.queryStringParameters || {};
+  const response = new BaseResponse(code);
   try {
     const params = {
       TableName: DYNAMO_DB_Table || "",
