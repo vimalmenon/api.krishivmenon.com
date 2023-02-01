@@ -26,12 +26,13 @@
     "serverless-iam-roles-per-function": "^3.2.0",
     "serverless-offline": "^12.0.4",
     "serverless-plugin-typescript": "^2.1.4",
-    "typescript": "^4.9.4"
+    "typescript": "^4.9.5"
   },
   "dependencies": {
-    "@middy/core": "^4.2.1",
-    "@middy/http-json-body-parser": "^4.2.1",
-    "aws-sdk": "^2.1304.0",
+    "@middy/core": "^4.2.3",
+    "@middy/http-json-body-parser": "^4.2.3",
+    "@middy/http-multipart-body-parser": "^4.2.3",
+    "aws-sdk": "^2.1307.0",
     "serverless": "^3.27.0"
   }
 }
