@@ -30,7 +30,7 @@ export const handler = middy(async (event: APIGatewayEvent) => {
           parent: folder.parent || "",
           childNode: 0,
           metadata: {},
-          content: [],
+          files: [],
         },
       })
       .promise();

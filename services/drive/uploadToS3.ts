@@ -2,15 +2,17 @@ import middy from "@middy/core";
 import httpMultipartBodyParser from "@middy/http-multipart-body-parser";
 import { APIGatewayEvent } from "aws-lambda/trigger/api-gateway-proxy";
 import { randomUUID } from "crypto";
-import fs from "fs";
 
 import { BaseResponse } from "../common/response";
 import { isValidFolder } from "./helper";
-import { s3 } from "../common/awsService";
-import { S3_BUCKET_NAME } from "../common/constants";
+import { getFolderById, updateFolderFiles } from "../folders/helper";
+import { s3, dynamoDB } from "../common/awsService";
+import { S3_BUCKET_NAME, DB_KEY, DYNAMO_DB_Table } from "../common/constants";
+
+const appKey = `${DB_KEY}#FILE`;
 
 export const handler = middy(async (event: APIGatewayEvent) => {
-  const { data, extension } = (event.body || {}) as any;
+  const { data, extension, folderId } = (event.body || {}) as any;
   const { code } = event.queryStringParameters || {};
   const { folder } = event.pathParameters || {};
   const response = new BaseResponse(code);
@@ -19,19 +21,38 @@ export const handler = middy(async (event: APIGatewayEvent) => {
   }
   try {
     const uid = randomUUID();
+    const fileName = `${uid}.${extension}`;
+
     const params = {
       Bucket: S3_BUCKET_NAME || "",
-      Key: `${folder}/${uid}.${extension}`,
+      Key: `${folder}/${fileName}`,
       Body: data.content,
       ContentType: data.mimetype,
     };
-    const s3Result = await s3.putObject(params).promise();
-    console.log(s3Result, "this is s3 result");
-    return response
-      .setData({
-        message: "read",
+    await s3.putObject(params).promise();
+
+    await dynamoDB
+      .put({
+        TableName: DYNAMO_DB_Table || "",
+        Item: {
+          appKey: appKey,
+          sortKey: `file#${fileName}`,
+          createdDate: new Date().toISOString(),
+          updatedDate: new Date().toISOString(),
+          id: fileName,
+          path: folder,
+          type: data.mimetype,
+          label: fileName,
+        },
       })
-      .response();
+      .promise();
+    const selectedFolder = await getFolderById(folderId);
+    await updateFolderFiles(folderId, [
+      ...(selectedFolder.Item?.files || []),
+      fileName,
+    ]);
+    const selectedFolderUpdated = await getFolderById(folderId);
+    return response.setData(selectedFolderUpdated.Item).response();
   } catch (error) {
     return response.forError(error.message).response();
   }

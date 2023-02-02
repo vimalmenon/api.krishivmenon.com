@@ -30,3 +30,24 @@ export const getFolderById = (id: string) => {
   };
   return dynamoDB.get(params).promise();
 };
+
+export const updateFolderFiles = async (id: string, files: string[]) => {
+  const updateParams = {
+    TableName: DYNAMO_DB_Table || "",
+    Key: {
+      appKey: appKey,
+      sortKey: `folder#${id}`,
+    },
+    UpdateExpression: `set #files=:files, #updatedDate=:updatedDate`,
+    ExpressionAttributeValues: {
+      ":updatedDate": new Date().toISOString(),
+      ":files": files,
+    },
+    ExpressionAttributeNames: {
+      "#updatedDate": "updatedDate",
+      "#files": "files",
+    },
+    ReturnValues: "UPDATED_NEW",
+  };
+  const result = await dynamoDB.update(updateParams).promise();
+};

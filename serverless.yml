@@ -55,6 +55,8 @@ functions:
         Action:
           - s3:PutObject
           - dynamodb:PutItem
+          - dynamodb:GetItem
+          - dynamodb:UpdateItem
         Resource: "*"
   updateS3File:
     handler: services/drive/handler.updateS3File
