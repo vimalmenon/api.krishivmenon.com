@@ -20,8 +20,9 @@ provider:
   runtime: nodejs16.x
   apiGateway:
     binaryMediaTypes:
-      - 'application/pdf'
+      - 'application/*'
       - 'image/*'
+      - 'multipart/form-data'
   environment:
     S3_BUCKET_NAME: ${env:S3_BUCKET_NAME}
     DYNAMO_DB_Table: ${env:DYNAMO_DB_TABLE}
@@ -43,10 +44,10 @@ functions:
           - dynamodb:Query
         Resource: "*"
   uploadToS3:
-    handler: services/drive/handler.uploadToS3
+    handler: services/drive/uploadToS3.handler
     events:
       - http:
-          path: /drive/{folder}/{file}
+          path: /drive/{folder}
           method: post
           cors: true
     iamRoleStatements:
