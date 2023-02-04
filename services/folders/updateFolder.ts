@@ -19,20 +19,16 @@ export const handler = middy(async (event: APIGatewayEvent) => {
         appKey: appKey,
         sortKey: `folder#${id}`,
       },
-      UpdateExpression: `set #label=:label , #metadata=:metadata, #parent=:parent, #content=:content, #updatedDate=:updatedDate`,
+      UpdateExpression: `set #label=:label , #metadata=:metadata, #updatedDate=:updatedDate`,
       ExpressionAttributeValues: {
         ":updatedDate": new Date().toISOString(),
         ":label": body.label,
         ":metadata": body.metadata,
-        ":parent": body.parent,
-        ":content": body.content,
       },
       ExpressionAttributeNames: {
         "#updatedDate": "updatedDate",
         "#label": "label",
         "#metadata": "metadata",
-        "#parent": "parent",
-        "#content": "content",
       },
       ReturnValues: "UPDATED_NEW",
     };

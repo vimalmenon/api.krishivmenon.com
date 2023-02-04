@@ -45,13 +45,14 @@ export const handler = middy(async (event: APIGatewayEvent) => {
           id: fileName,
           path: `${imageFolder}/${fileName}`,
           type: data.mimetype,
+          metadata: {},
           label: fileName,
         },
       })
       .promise();
 
-    return response.forSuccessMessage("File has been uploaded").response();
+    return response.setMessage("File has been uploaded").response();
   } catch (error) {
-    return response.forError(error.message).response();
+    return response.setMessage(error.message).withError().response();
   }
 }).use(httpMultipartBodyParser());

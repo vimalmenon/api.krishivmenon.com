@@ -19,6 +19,14 @@ export class BaseResponse {
     this.data = data;
     return this;
   };
+  public setMessage = (message: string) => {
+    this.message = message;
+    return this;
+  };
+  public withError(statusCode: number = 500) {
+    this.statusCode = statusCode;
+    return this;
+  }
   private getBody = () => {
     return {
       data: this.data,

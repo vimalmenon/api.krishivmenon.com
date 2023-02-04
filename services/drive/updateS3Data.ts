@@ -9,29 +9,34 @@ import { S3_BUCKET_NAME, DB_KEY, DYNAMO_DB_Table } from "../common/constants";
 const appKey = `${DB_KEY}#FOLDERS_FILE`;
 
 export const handler = middy(async (event: APIGatewayEvent) => {
-  const { folderId, fileName } = (event.body || {}) as any;
+  const { fileName, label, metadata } = (event.body || {}) as any;
   const { code } = event.queryStringParameters || {};
   const { folder } = event.pathParameters || {};
   const response = new BaseResponse(code);
   try {
-    await s3
-      .deleteObject({
-        Bucket: S3_BUCKET_NAME || "",
-        Key: `${folderId}#${fileName}`,
-      })
-      .promise();
-
     await dynamoDB
-      .delete({
+      .update({
         TableName: DYNAMO_DB_Table || "",
         Key: {
           appKey: appKey,
-          sortKey: `${folderId}#${fileName}`,
+          sortKey: `${folder}#${fileName}`,
         },
+        UpdateExpression: `set #label=:label , #metadata=:metadata, #updatedDate=:updatedDate`,
+        ExpressionAttributeValues: {
+          ":updatedDate": new Date().toISOString(),
+          ":label": label,
+          ":metadata": metadata,
+        },
+        ExpressionAttributeNames: {
+          "#updatedDate": "updatedDate",
+          "#label": "label",
+          "#metadata": "metadata",
+        },
+        ReturnValues: "UPDATED_NEW",
       })
       .promise();
-    return response.forSuccessMessage("File has been deleted").response();
+    return response.setMessage("File has been updated").response();
   } catch (error) {
-    return response.forError(error.message).response();
+    return response.setMessage(error.message).withError().response();
   }
 }).use(jsonBodyParser());

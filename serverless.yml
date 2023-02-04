@@ -57,18 +57,18 @@ functions:
           - dynamodb:DeleteItem
           - dynamodb:GetItem
         Resource: "*"
-  # updateS3File:
-  #   handler: services/drive/handler.updateS3File
-  #   events:
-  #     - http:
-  #         path: /drive/{folder}/{file}
-  #         method: put
-  #         cors: true
-  #   iamRoleStatements:
-  #     - Effect: "Allow"        
-  #       Action:
-  #         - s3:ListObject
-  #       Resource: "*"
+  updateS3File:
+    handler: services/drive/updateS3Data.handler
+    events:
+      - http:
+          path: /drive/{folder}
+          method: put
+          cors: true
+    iamRoleStatements:
+      - Effect: "Allow"        
+        Action:
+          - dynamodb:UpdateItem
+        Resource: "*"
   getFilesFromS3:
     handler: services/drive/getFilesFromS3.handler
     events:
