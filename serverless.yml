@@ -30,19 +30,6 @@ provider:
 
 functions:
   # drive Apis
-  getFilesFromS3:
-    handler: services/drive/handler.getFilesFromS3
-    events:
-      - http:
-          path: /drive/{folder}
-          method: get
-          cors: true
-    iamRoleStatements:
-      - Effect: "Allow"        
-        Action:
-          - s3:ListObject
-          - dynamodb:Query
-        Resource: "*"
   uploadToS3:
     handler: services/drive/uploadToS3.handler
     events:
@@ -55,8 +42,19 @@ functions:
         Action:
           - s3:PutObject
           - dynamodb:PutItem
-          - dynamodb:GetItem
-          - dynamodb:UpdateItem
+        Resource: "*"
+  deleteFromS3:
+    handler: services/drive/deleteFromS3.handler
+    events:
+      - http:
+          path: /drive
+          method: delete
+          cors: true
+    iamRoleStatements:
+      - Effect: "Allow"        
+        Action:
+          - s3:DeleteObject
+          - dynamodb:DeleteItem
         Resource: "*"
   updateS3File:
     handler: services/drive/handler.updateS3File
@@ -70,19 +68,20 @@ functions:
         Action:
           - s3:ListObject
         Resource: "*"
-  deleteFromS3:
-    handler: services/drive/handler.deleteFromS3
+  getFilesFromS3:
+    handler: services/drive/handler.getFilesFromS3
     events:
       - http:
-          path: /drive/{folder}/{file}
-          method: delete
+          path: /drive/{folder}
+          method: get
           cors: true
     iamRoleStatements:
       - Effect: "Allow"        
         Action:
-          - s3:DeleteObject
-          - dynamodb:DeleteItem
+          - s3:ListObject
+          - dynamodb:Query
         Resource: "*"
+
   # folders api
   getByParentFolder:
     handler: services/folders/getByParentFolder.handler
@@ -148,6 +147,7 @@ functions:
           - dynamodb:UpdateItem
           - dynamodb:Query
         Resource: "*"
+
   # notes api
   getNotes:
     handler: services/notes/getNotes.handler
