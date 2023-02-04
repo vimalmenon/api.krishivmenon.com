@@ -1,8 +1,9 @@
 /drive
-  - DELETE    : Delete the file
   /{folder}
     - GET          : Get all the image
     - POST      : Upload the file
+    /{file}
+    - DELETE    : Delete the file
 
 /folders
   - POST
