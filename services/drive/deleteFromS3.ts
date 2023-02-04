@@ -38,8 +38,8 @@ export const handler = middy(async (event: APIGatewayEvent) => {
         },
       })
       .promise();
-    return response.forSuccessMessage("File has been deleted").response();
+    return response.setMessage("File has been deleted").response();
   } catch (error) {
-    return response.forError(error.message).response();
+    return response.setMessage(error.message).withError().response();
   }
 }).use(jsonBodyParser());

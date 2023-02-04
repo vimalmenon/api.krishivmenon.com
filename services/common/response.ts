@@ -6,15 +6,6 @@ export class BaseResponse {
   constructor(code = "0") {
     this.code = parseInt(code);
   }
-  public forError = (message: string = "Error") => {
-    this.statusCode = 500;
-    this.message = message;
-    return this;
-  };
-  public forSuccessMessage = (message: string) => {
-    this.message = message;
-    return this;
-  };
   public setData = (data) => {
     this.data = data;
     return this;

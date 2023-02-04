@@ -27,6 +27,6 @@ export const handler = middy(async (event: APIGatewayEvent) => {
     const result = (await getFoldersByParent(item.parent)) as any;
     return response.setData(result.Items).response();
   } catch (error) {
-    return response.forError(error.message).response();
+    return response.setMessage(error.message).withError().response();
   }
 }).use(jsonBodyParser());
