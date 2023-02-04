@@ -25,7 +25,12 @@ export const handler = middy(async (event: APIGatewayEvent) => {
     const uid = randomUUID();
     const fileName = `${uid}.${extension}`;
     const imageFolder = DriveFolderMapping[data.mimetype];
-
+    if (!data.mimetype) {
+      return response
+        .setMessage("This format is not support")
+        .withError()
+        .response();
+    }
     const params = {
       Bucket: S3_BUCKET_NAME || "",
       Key: `${imageFolder}/${fileName}`,
