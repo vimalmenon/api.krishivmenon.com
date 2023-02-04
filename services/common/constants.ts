@@ -2,6 +2,18 @@ export const DYNAMO_DB_Table = process.env.DYNAMO_DB_Table;
 export const DB_KEY = process.env.DB_KEY;
 export const S3_BUCKET_NAME = process.env.S3_BUCKET_NAME;
 
+export const FileTypeExtensionMapping: Record<string, string> = {
+  "image/jpeg": "jpeg",
+  "image/png": "png",
+  "image/heic": "heic",
+  "application/pdf": "pdf",
+  "application/zip": "zip",
+  "application/json": "json",
+  "video/quicktime": "mov",
+  "video/mp4": "mp4",
+  "audio/mpeg": "mp3",
+};
+
 export const SupportedFileTypes = [
   "image/jpeg",
   "image/png",

@@ -47,7 +47,7 @@ functions:
     handler: services/drive/deleteFromS3.handler
     events:
       - http:
-          path: /drive
+          path: /drive/{folder}/{file}
           method: delete
           cors: true
     iamRoleStatements:
@@ -55,6 +55,7 @@ functions:
         Action:
           - s3:DeleteObject
           - dynamodb:DeleteItem
+          - dynamodb:GetItem
         Resource: "*"
   updateS3File:
     handler: services/drive/handler.updateS3File

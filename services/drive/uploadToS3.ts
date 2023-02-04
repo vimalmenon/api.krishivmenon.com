@@ -4,27 +4,31 @@ import { APIGatewayEvent } from "aws-lambda/trigger/api-gateway-proxy";
 import { randomUUID } from "crypto";
 
 import { BaseResponse } from "../common/response";
-import { isValidFolder } from "./helper";
 import { s3, dynamoDB } from "../common/awsService";
-import { S3_BUCKET_NAME, DB_KEY, DYNAMO_DB_Table } from "../common/constants";
+import {
+  S3_BUCKET_NAME,
+  DB_KEY,
+  DYNAMO_DB_Table,
+  FileTypeExtensionMapping,
+  DriveFolderMapping,
+} from "../common/constants";
 
 const appKey = `${DB_KEY}#FOLDERS_FILE`;
 
 export const handler = middy(async (event: APIGatewayEvent) => {
-  const { data, extension, folderId } = (event.body || {}) as any;
+  const { data } = (event.body || {}) as any;
   const { code } = event.queryStringParameters || {};
   const { folder } = event.pathParameters || {};
   const response = new BaseResponse(code);
-  if (!isValidFolder(folder || "")) {
-    return response.forError("Not a valid folder").response();
-  }
   try {
+    const extension = FileTypeExtensionMapping[data.mimetype];
     const uid = randomUUID();
     const fileName = `${uid}.${extension}`;
+    const imageFolder = DriveFolderMapping[data.mimetype];
 
     const params = {
       Bucket: S3_BUCKET_NAME || "",
-      Key: `${folder}/${fileName}`,
+      Key: `${imageFolder}/${fileName}`,
       Body: data.content,
       ContentType: data.mimetype,
     };
@@ -35,11 +39,11 @@ export const handler = middy(async (event: APIGatewayEvent) => {
         TableName: DYNAMO_DB_Table || "",
         Item: {
           appKey: appKey,
-          sortKey: `${folderId}#${fileName}`,
+          sortKey: `${folder}#${fileName}`,
           createdDate: new Date().toISOString(),
           updatedDate: new Date().toISOString(),
           id: fileName,
-          path: `${folder}/${fileName}`,
+          path: `${imageFolder}/${fileName}`,
           type: data.mimetype,
           label: fileName,
         },

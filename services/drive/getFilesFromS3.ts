@@ -9,23 +9,15 @@ import { S3_BUCKET_NAME, DB_KEY, DYNAMO_DB_Table } from "../common/constants";
 const appKey = `${DB_KEY}#FOLDERS_FILE`;
 
 export const handler = middy(async (event: APIGatewayEvent) => {
+  const { folderId, fileName } = (event.body || {}) as any;
   const { code } = event.queryStringParameters || {};
-  const { folder, file } = event.pathParameters || {};
+  const { folder } = event.pathParameters || {};
   const response = new BaseResponse(code);
   try {
-    const result = await dynamoDB
-      .get({
-        TableName: DYNAMO_DB_Table || "",
-        Key: {
-          appKey: appKey,
-          sortKey: `${folder}#${file}`,
-        },
-      })
-      .promise();
     await s3
       .deleteObject({
         Bucket: S3_BUCKET_NAME || "",
-        Key: result.Item?.path,
+        Key: `${folderId}#${fileName}`,
       })
       .promise();
 
@@ -34,7 +26,7 @@ export const handler = middy(async (event: APIGatewayEvent) => {
         TableName: DYNAMO_DB_Table || "",
         Key: {
           appKey: appKey,
-          sortKey: `${folder}#${file}`,
+          sortKey: `${folderId}#${fileName}`,
         },
       })
       .promise();
