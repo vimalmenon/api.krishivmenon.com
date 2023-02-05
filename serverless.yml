@@ -210,4 +210,5 @@ functions:
       - Effect: "Allow"
         Action:
           - dynamodb:UpdateItem
+          - dynamodb:Query
         Resource: "*"

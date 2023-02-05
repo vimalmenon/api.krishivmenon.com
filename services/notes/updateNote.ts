@@ -1,40 +1,56 @@
-import { respondForError, respondToSuccess } from "../common/response";
+import { BaseResponse } from "../common/response";
 import { DYNAMO_DB_Table, DB_KEY } from "../common/constants";
 import { dynamoDB } from "../common/awsService";
 
 import jsonBodyParser from "@middy/http-json-body-parser";
-import { APIGatewayEvent, APIGatewayProxyResult } from "aws-lambda";
+import { APIGatewayEvent } from "aws-lambda";
 
 const appKey = `${DB_KEY}#NOTE`;
 
 import middy from "@middy/core";
 
 export const handler = middy(async (event: APIGatewayEvent) => {
+  const id = event.pathParameters?.id;
+  const body = event.body as any;
+  const { code } = event.queryStringParameters || {};
+  const response = new BaseResponse(code);
   try {
-    const id = event.pathParameters?.id;
-    const body = event.body as any;
+    await dynamoDB
+      .update({
+        TableName: DYNAMO_DB_Table || "",
+        Key: {
+          appKey: appKey,
+          sortKey: `note#${id}`,
+        },
+        UpdateExpression: `set #title=:title , #content=:content, #updatedDate=:updatedDate,  #metadata=:metadata`,
+        ExpressionAttributeValues: {
+          ":updatedDate": new Date().toISOString(),
+          ":content": body.content,
+          ":title": body.title,
+          ":metadata": body.metadata,
+        },
+        ExpressionAttributeNames: {
+          "#updatedDate": "updatedDate",
+          "#content": "content",
+          "#title": "title",
+          "#metadata": "metadata",
+        },
+        ReturnValues: "UPDATED_NEW",
+      })
+      .promise();
     const params = {
       TableName: DYNAMO_DB_Table || "",
-      Key: {
-        appKey: appKey,
-        sortKey: `note#${id}`,
-      },
-      UpdateExpression: `set #title=:title , #content=:content, #updatedDate=:updatedDate`,
-      ExpressionAttributeValues: {
-        ":updatedDate": new Date().toISOString(),
-        ":content": body.content,
-        ":title": body.title,
-      },
+      KeyConditionExpression: "#appKey = :appKey",
       ExpressionAttributeNames: {
-        "#updatedDate": "updatedDate",
-        "#content": "content",
-        "#title": "title",
+        "#appKey": "appKey",
       },
-      ReturnValues: "UPDATED_NEW",
+      ExpressionAttributeValues: {
+        ":appKey": appKey,
+      },
     };
-    const result = await dynamoDB.update(params).promise();
-    return respondToSuccess({ message: "this is vimal menon", result });
+    const result = await dynamoDB.query(params).promise();
+    return response.setData(result.Items).response();
   } catch (error) {
-    return respondForError({ message: error.message });
+    return response.setMessage(error.message).withError().response();
   }
 }).use(jsonBodyParser());

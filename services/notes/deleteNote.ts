@@ -16,7 +16,7 @@ export const handler = middy(async (event: APIGatewayEvent) => {
   const { code } = event.queryStringParameters || {};
   const response = new BaseResponse(code);
   try {
-    dynamoDB
+    await dynamoDB
       .delete({
         TableName: DYNAMO_DB_Table || "",
         Key: {
