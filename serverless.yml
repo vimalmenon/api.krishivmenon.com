@@ -184,6 +184,7 @@ functions:
       - Effect: "Allow"
         Action:
           - dynamodb:PutItem
+          - dynamodb:Query
         Resource: "*"
   deleteNote:
     handler: services/notes/deleteNote.handler
@@ -196,6 +197,7 @@ functions:
       - Effect: "Allow"
         Action:
           - dynamodb:DeleteItem
+          - dynamodb:Query
         Resource: "*"
   updateNote:
     handler: services/notes/updateNote.handler

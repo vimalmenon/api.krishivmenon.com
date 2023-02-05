@@ -1,4 +1,6 @@
-import { respondForError, respondToSuccess } from "../common/response";
+import {
+  BaseResponse,
+} from "../common/response";
 import { DYNAMO_DB_Table, DB_KEY } from "../common/constants";
 import { dynamoDB } from "../common/awsService";
 
@@ -11,17 +13,31 @@ import middy from "@middy/core";
 
 export const handler = middy(async (event: APIGatewayEvent) => {
   const id = event.pathParameters?.id;
+  const { code } = event.queryStringParameters || {};
+  const response = new BaseResponse(code);
   try {
+    dynamoDB
+      .delete({
+        TableName: DYNAMO_DB_Table || "",
+        Key: {
+          appKey: appKey,
+          sortKey: `note#${id}`,
+        },
+      })
+      .promise();
     const params = {
       TableName: DYNAMO_DB_Table || "",
-      Key: {
-        appKey: appKey,
-        sortKey: `note#${id}`,
+      KeyConditionExpression: "#appKey = :appKey",
+      ExpressionAttributeNames: {
+        "#appKey": "appKey",
+      },
+      ExpressionAttributeValues: {
+        ":appKey": appKey,
       },
     };
-    await dynamoDB.delete(params).promise();
-    return respondToSuccess({ message: `${id} note deleted` });
+    const result = await dynamoDB.query(params).promise();
+    return response.setData(result.Items).response();
   } catch (error) {
-    return respondForError({ message: error.message });
+    return response.setMessage(error.message).withError().response();
   }
 }).use(jsonBodyParser());
