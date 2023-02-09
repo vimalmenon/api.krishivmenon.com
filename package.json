@@ -32,7 +32,8 @@
     "@middy/core": "^4.2.3",
     "@middy/http-json-body-parser": "^4.2.3",
     "@middy/http-multipart-body-parser": "^4.2.3",
-    "aws-sdk": "^2.1309.0",
+    "aws-jwt-verify": "^3.4.0",
+    "aws-sdk": "^2.1311.0",
     "serverless": "^3.27.0"
   }
 }

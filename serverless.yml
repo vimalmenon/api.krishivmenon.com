@@ -29,6 +29,8 @@ provider:
     DB_KEY: ${env:DB_KEY}
 
 functions:
+  authorizer:
+    handler: services/authorizer.handler
   # drive Apis
   uploadToS3:
     handler: services/drive/uploadToS3.handler
@@ -37,6 +39,9 @@ functions:
           path: /drive/{folder}
           method: post
           cors: true
+          authorizer: 
+            name: authorizer
+            resultTtlInSeconds: 0
     iamRoleStatements:
       - Effect: "Allow"        
         Action:
@@ -50,6 +55,9 @@ functions:
           path: /drive/{folder}/{file}
           method: delete
           cors: true
+          authorizer: 
+            name: authorizer
+            resultTtlInSeconds: 0
     iamRoleStatements:
       - Effect: "Allow"        
         Action:
@@ -64,6 +72,9 @@ functions:
           path: /drive/{folder}
           method: put
           cors: true
+          authorizer: 
+            name: authorizer
+            resultTtlInSeconds: 0
     iamRoleStatements:
       - Effect: "Allow"        
         Action:
@@ -76,6 +87,9 @@ functions:
           path: /drive/{folder}
           method: get
           cors: true
+          authorizer: 
+            name: authorizer
+            resultTtlInSeconds: 0
     iamRoleStatements:
       - Effect: "Allow"        
         Action:
@@ -90,6 +104,9 @@ functions:
           path: /folders/parent/{id}
           method: get
           cors: true
+          authorizer: 
+            name: authorizer
+            resultTtlInSeconds: 0
     iamRoleStatements:
       - Effect: "Allow"        
         Action:
@@ -102,6 +119,9 @@ functions:
           path: /folders
           method: post
           cors: true
+          authorizer: 
+            name: authorizer
+            resultTtlInSeconds: 0
     iamRoleStatements:
       - Effect: "Allow"
         Action:
@@ -115,6 +135,9 @@ functions:
           path: /folders/{id}
           method: delete
           cors: true
+          authorizer: 
+            name: authorizer
+            resultTtlInSeconds: 0
     iamRoleStatements:
       - Effect: "Allow"
         Action:
@@ -129,6 +152,9 @@ functions:
           path: /folders/{id}
           method: put
           cors: true
+          authorizer: 
+            name: authorizer
+            resultTtlInSeconds: 0
     iamRoleStatements:
       - Effect: "Allow"
         Action:
@@ -141,6 +167,9 @@ functions:
           path: /folders/folder_data/{id}
           method: put
           cors: true
+          authorizer: 
+            name: authorizer
+            resultTtlInSeconds: 0
     iamRoleStatements:
       - Effect: "Allow"
         Action:
@@ -156,6 +185,9 @@ functions:
           path: /notes
           method: get
           cors: true
+          authorizer: 
+            name: authorizer
+            resultTtlInSeconds: 0
     iamRoleStatements:
       - Effect: "Allow"        
         Action:
@@ -168,6 +200,9 @@ functions:
           path: /notes/{id}
           method: get
           cors: true
+          authorizer: 
+            name: authorizer
+            resultTtlInSeconds: 0
     iamRoleStatements:
       - Effect: "Allow"        
         Action:
@@ -180,6 +215,9 @@ functions:
           path: /notes
           method: post
           cors: true
+          authorizer: 
+            name: authorizer
+            resultTtlInSeconds: 0
     iamRoleStatements:
       - Effect: "Allow"
         Action:
@@ -193,6 +231,9 @@ functions:
           path: /notes/{id}
           method: delete
           cors: true
+          authorizer: 
+            name: authorizer
+            resultTtlInSeconds: 0
     iamRoleStatements:
       - Effect: "Allow"
         Action:
@@ -206,9 +247,25 @@ functions:
           path: /notes/{id}
           method: put
           cors: true
+          authorizer: 
+            name: authorizer
+            resultTtlInSeconds: 0
     iamRoleStatements:
       - Effect: "Allow"
         Action:
           - dynamodb:UpdateItem
           - dynamodb:Query
         Resource: "*"
+
+resources:
+  Resources:
+    Unauthorized:
+      Type: AWS::ApiGateway::GatewayResponse
+      Properties:
+        ResponseParameters:
+          "gatewayresponse.header.Access-Control-Allow-Origin": "'*'"
+          "gatewayresponse.header.Access-Control-Allow-Headers": "'*'"
+        ResponseType: "DEFAULT_4XX"
+        RestApiId:
+          Ref: "ApiGatewayRestApi"
+
