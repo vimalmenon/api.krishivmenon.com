@@ -1,3 +1,20 @@
+Finished Task:
+High Priority:
+  Move to serverless-bundle
+  Redirect apis from api.krishivmenon.com
+  Need to update createdBy from API
+  Create S3 bucket to upload the images
+  Create a profile
+  Create Roles
+  Create a build version for API
+  GitHub Action
+Medium Priority
+  Need to send custom Response code even for error
+Less Priority
+  Need to organize the serverless file more properly
+  Need to create a different build for production
+
+
 /drive
   /{folder}
     - GET          : Get all the image

@@ -1,5 +1,5 @@
 export class BaseResponse {
-  public message: string = "Success";
+  public message = "Success";
   public data = null;
   public statusCode = 200;
   public code = 0;
@@ -14,7 +14,7 @@ export class BaseResponse {
     this.message = message;
     return this;
   };
-  public withError(statusCode: number = 500) {
+  public withError(statusCode = 500) {
     this.statusCode = statusCode;
     return this;
   }

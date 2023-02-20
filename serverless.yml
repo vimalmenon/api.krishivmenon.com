@@ -5,7 +5,7 @@ frameworkVersion: '3'
 
 plugins:
   - serverless-offline
-  - serverless-plugin-typescript
+  - serverless-bundle
   - serverless-iam-roles-per-function
   - serverless-dotenv-plugin
 
