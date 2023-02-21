@@ -1,5 +1,9 @@
 import { CognitoJwtVerifier } from "aws-jwt-verify";
 import { USER_POOL_ID, CLIENT_ID } from "./common/constants";
+import {
+  APIGatewayTokenAuthorizerEvent,
+  APIGatewayAuthorizerResult,
+} from "aws-lambda";
 
 // Verifier that expects valid access tokens:
 const verifier = CognitoJwtVerifier.create({
@@ -8,7 +12,10 @@ const verifier = CognitoJwtVerifier.create({
   clientId: CLIENT_ID || "",
 });
 
-export const handler = async (event, context) => {
+export const handler = async (
+  event: APIGatewayTokenAuthorizerEvent,
+  context
+): Promise<APIGatewayAuthorizerResult> => {
   try {
     const result = await verifier.verify(event.authorizationToken);
     console.log(result, result["cognito:groups"]?.includes("Admin"));
@@ -24,6 +31,9 @@ export const handler = async (event, context) => {
               Resource: event.methodArn,
             },
           ],
+        },
+        context: {
+          userEmail: result.email as string,
         },
       };
     } else {

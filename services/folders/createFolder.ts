@@ -12,6 +12,7 @@ const appKey = `${DB_KEY}#FOLDER`;
 
 export const handler = middy(async (event: APIGatewayEvent) => {
   const { code } = event.queryStringParameters || {};
+  const createdBy = event.requestContext.authorizer?.userEmail;
   const response = new BaseResponse(code);
   try {
     const folder = event.body as any;
@@ -25,6 +26,7 @@ export const handler = middy(async (event: APIGatewayEvent) => {
           sortKey: `folder#${uid}`,
           createdDate: new Date().toISOString(),
           updatedDate: new Date().toISOString(),
+          createdBy,
           id: uid,
           label: folder.label || "",
           parent: folder.parent || "",
