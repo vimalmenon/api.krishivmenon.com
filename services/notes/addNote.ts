@@ -15,6 +15,8 @@ export const handler = middy(async (event: APIGatewayEvent) => {
   const note = event.body as any;
   const uid = randomUUID();
   const response = new BaseResponse(code);
+  const createdBy = event.requestContext.authorizer?.userEmail;
+
   try {
     await dynamoDB
       .put({
@@ -24,6 +26,7 @@ export const handler = middy(async (event: APIGatewayEvent) => {
           sortKey: `note#${uid}`,
           createdDate: new Date().toISOString(),
           updatedDate: new Date().toISOString(),
+          createdBy,
           id: uid,
           title: note.title || "",
           content: note.content || "",

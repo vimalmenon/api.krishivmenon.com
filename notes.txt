@@ -1,11 +1,11 @@
 Finished Task:
   Show build version in API
-High Priority:
   Move to serverless-bundle
-  Redirect apis from api.krishivmenon.com
   Need to update createdBy from API
+High Priority:
+  Redirect apis from api.krishivmenon.com
   Create S3 bucket to upload the images
-  Create a profile
+  Create a profile in DB
   Create Roles
   GitHub Action
   Set up eslint

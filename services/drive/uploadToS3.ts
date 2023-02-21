@@ -20,6 +20,8 @@ export const handler = middy(async (event: APIGatewayEvent) => {
   const { code } = event.queryStringParameters || {};
   const { folder } = event.pathParameters || {};
   const response = new BaseResponse(code);
+  const createdBy = event.requestContext.authorizer?.userEmail;
+
   try {
     const extension = FileTypeExtensionMapping[data.mimetype];
     const uid = randomUUID();
@@ -47,6 +49,7 @@ export const handler = middy(async (event: APIGatewayEvent) => {
           sortKey: `${folder}#${fileName}`,
           createdDate: new Date().toISOString(),
           updatedDate: new Date().toISOString(),
+          createdBy,
           id: fileName,
           path: `${imageFolder}/${fileName}`,
           type: data.mimetype,
