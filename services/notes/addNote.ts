@@ -7,12 +7,13 @@ import { APIGatewayEvent, APIGatewayProxyResult } from 'aws-lambda';
 import { dynamoDB } from '../common/awsService';
 import { DYNAMO_DB_Table, DB_KEY } from '../common/constants';
 import { BaseResponse } from '../common/response';
+import { INote } from '../types';
 
 const appKey = `${DB_KEY}#NOTE`;
 
 export const handler = middy(async (event: APIGatewayEvent): Promise<APIGatewayProxyResult> => {
   const { code } = event.queryStringParameters || {};
-  const note = event.body as any;
+  const note = event.body as unknown as INote;
   const uid = randomUUID();
   const response = new BaseResponse(code);
   const createdBy = event.requestContext.authorizer?.userEmail;

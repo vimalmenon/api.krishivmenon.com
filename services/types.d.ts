@@ -28,3 +28,15 @@ export interface IFolder extends IBaseDB {
   parent: string;
   content: string[];
 }
+
+export interface IProfile extends IBaseDB {
+  name: string;
+  role: string;
+  email: string;
+  picture: string;
+}
+
+export interface IRole extends IBaseDB {
+  name: string;
+  roles: string[];
+}
