@@ -1,17 +1,18 @@
-import middy from "@middy/core";
-import httpMultipartBodyParser from "@middy/http-multipart-body-parser";
-import { APIGatewayEvent } from "aws-lambda/trigger/api-gateway-proxy";
-import { randomUUID } from "crypto";
+import { randomUUID } from 'crypto';
 
-import { BaseResponse } from "../common/response";
-import { s3, dynamoDB } from "../common/awsService";
+import middy from '@middy/core';
+import httpMultipartBodyParser from '@middy/http-multipart-body-parser';
+import { APIGatewayEvent } from 'aws-lambda/trigger/api-gateway-proxy';
+
+import { s3, dynamoDB } from '../common/awsService';
 import {
   S3_BUCKET_NAME,
   DB_KEY,
   DYNAMO_DB_Table,
   FileTypeExtensionMapping,
   DriveFolderMapping,
-} from "../common/constants";
+} from '../common/constants';
+import { BaseResponse } from '../common/response';
 
 const appKey = `${DB_KEY}#FOLDERS_FILE`;
 
@@ -28,13 +29,10 @@ export const handler = middy(async (event: APIGatewayEvent) => {
     const fileName = `${uid}.${extension}`;
     const imageFolder = DriveFolderMapping[data.mimetype];
     if (!data.mimetype) {
-      return response
-        .setMessage("This format is not support")
-        .withError()
-        .response();
+      return response.setMessage('This format is not support').withError().response();
     }
     const params = {
-      Bucket: S3_BUCKET_NAME || "",
+      Bucket: S3_BUCKET_NAME || '',
       Key: `${imageFolder}/${fileName}`,
       Body: data.content,
       ContentType: data.mimetype,
@@ -43,7 +41,7 @@ export const handler = middy(async (event: APIGatewayEvent) => {
 
     await dynamoDB
       .put({
-        TableName: DYNAMO_DB_Table || "",
+        TableName: DYNAMO_DB_Table || '',
         Item: {
           appKey: appKey,
           sortKey: `${folder}#${fileName}`,
@@ -59,7 +57,7 @@ export const handler = middy(async (event: APIGatewayEvent) => {
       })
       .promise();
 
-    return response.setMessage("File has been uploaded").response();
+    return response.setMessage('File has been uploaded').response();
   } catch (error) {
     return response.setMessage(error.message).withError().response();
   }

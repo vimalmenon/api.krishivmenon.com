@@ -8,7 +8,9 @@
     "remove": "serverless remove",
     "local": "serverless offline",
     "tsc": "tsc",
-    "update": "ncu -u"
+    "update": "ncu -u",
+    "eslint": "eslint ./ --ext .ts",
+    "eslint:fix": "eslint ./ --ext .ts --fix"
   },
   "repository": {
     "type": "git",
@@ -22,6 +24,12 @@
   "homepage": "https://github.com/vimalmenon/api.krishivmenon.com#readme",
   "devDependencies": {
     "@types/aws-lambda": "^8.10.110",
+    "eslint": "^7.32.0",
+    "eslint-config-prettier": "^8.6.0",
+    "eslint-plugin-import": "^2.27.5",
+    "eslint-plugin-prettier": "^4.2.1",
+    "eslint-plugin-simple-import-sort": "^10.0.0",
+    "prettier": "^2.8.4",
     "serverless-dotenv-plugin": "^4.0.2",
     "serverless-iam-roles-per-function": "^3.2.0",
     "serverless-offline": "^12.0.4",

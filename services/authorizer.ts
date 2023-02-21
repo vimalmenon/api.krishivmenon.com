@@ -1,33 +1,29 @@
-import { CognitoJwtVerifier } from "aws-jwt-verify";
-import { USER_POOL_ID, CLIENT_ID } from "./common/constants";
-import {
-  APIGatewayTokenAuthorizerEvent,
-  APIGatewayAuthorizerResult,
-} from "aws-lambda";
+import { CognitoJwtVerifier } from 'aws-jwt-verify';
+import { APIGatewayTokenAuthorizerEvent, APIGatewayAuthorizerResult } from 'aws-lambda';
+
+import { USER_POOL_ID, CLIENT_ID } from './common/constants';
 
 // Verifier that expects valid access tokens:
 const verifier = CognitoJwtVerifier.create({
-  userPoolId: USER_POOL_ID || "",
-  tokenUse: "id",
-  clientId: CLIENT_ID || "",
+  userPoolId: USER_POOL_ID || '',
+  tokenUse: 'id',
+  clientId: CLIENT_ID || '',
 });
 
 export const handler = async (
-  event: APIGatewayTokenAuthorizerEvent,
-  context
+  event: APIGatewayTokenAuthorizerEvent
 ): Promise<APIGatewayAuthorizerResult> => {
   try {
     const result = await verifier.verify(event.authorizationToken);
-    console.log(result, result["cognito:groups"]?.includes("Admin"));
-    if (result["cognito:groups"]?.includes("Admin")) {
+    if (result['cognito:groups']?.includes('Admin')) {
       return {
-        principalId: "user",
+        principalId: 'user',
         policyDocument: {
-          Version: "2012-10-17",
+          Version: '2012-10-17',
           Statement: [
             {
-              Action: "execute-api:Invoke",
-              Effect: "Allow",
+              Action: 'execute-api:Invoke',
+              Effect: 'Allow',
               Resource: event.methodArn,
             },
           ],
@@ -38,13 +34,13 @@ export const handler = async (
       };
     } else {
       return {
-        principalId: "user",
+        principalId: 'user',
         policyDocument: {
-          Version: "2012-10-17",
+          Version: '2012-10-17',
           Statement: [
             {
-              Action: "execute-api:Invoke",
-              Effect: "Deny",
+              Action: 'execute-api:Invoke',
+              Effect: 'Deny',
               Resource: event.methodArn,
             },
           ],
@@ -52,6 +48,6 @@ export const handler = async (
       };
     }
   } catch (error) {
-    throw Error("Unauthorized");
+    throw Error('Unauthorized');
   }
 };

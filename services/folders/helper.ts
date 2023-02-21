@@ -1,20 +1,20 @@
-import { DYNAMO_DB_Table, DB_KEY } from "../common/constants";
-import { dynamoDB } from "../common/awsService";
+import { dynamoDB } from '../common/awsService';
+import { DYNAMO_DB_Table, DB_KEY } from '../common/constants';
 
 const appKey = `${DB_KEY}#FOLDER`;
 
 export const getFoldersByParent = (parentId: string) => {
   const params = {
-    TableName: DYNAMO_DB_Table || "",
-    KeyConditionExpression: "#appKey = :appKey",
-    FilterExpression: "#parent = :parent",
+    TableName: DYNAMO_DB_Table || '',
+    KeyConditionExpression: '#appKey = :appKey',
+    FilterExpression: '#parent = :parent',
     ExpressionAttributeNames: {
-      "#appKey": "appKey",
-      "#parent": "parent",
+      '#appKey': 'appKey',
+      '#parent': 'parent',
     },
     ExpressionAttributeValues: {
-      ":appKey": appKey,
-      ":parent": parentId,
+      ':appKey': appKey,
+      ':parent': parentId,
     },
   };
   return dynamoDB.query(params).promise();
@@ -22,7 +22,7 @@ export const getFoldersByParent = (parentId: string) => {
 
 export const getFolderById = (id: string) => {
   const params = {
-    TableName: DYNAMO_DB_Table || "",
+    TableName: DYNAMO_DB_Table || '',
     Key: {
       appKey: appKey,
       sortKey: `folder#${id}`,
@@ -33,21 +33,21 @@ export const getFolderById = (id: string) => {
 
 export const updateFolderFiles = async (id: string, files: string[]) => {
   const updateParams = {
-    TableName: DYNAMO_DB_Table || "",
+    TableName: DYNAMO_DB_Table || '',
     Key: {
       appKey: appKey,
       sortKey: `folder#${id}`,
     },
     UpdateExpression: `set #files=:files, #updatedDate=:updatedDate`,
     ExpressionAttributeValues: {
-      ":updatedDate": new Date().toISOString(),
-      ":files": files,
+      ':updatedDate': new Date().toISOString(),
+      ':files': files,
     },
     ExpressionAttributeNames: {
-      "#updatedDate": "updatedDate",
-      "#files": "files",
+      '#updatedDate': 'updatedDate',
+      '#files': 'files',
     },
-    ReturnValues: "UPDATED_NEW",
+    ReturnValues: 'UPDATED_NEW',
   };
-  const result = await dynamoDB.update(updateParams).promise();
+  await dynamoDB.update(updateParams).promise();
 };

@@ -1,26 +1,25 @@
-import { BaseResponse } from "../common/response";
-import { DYNAMO_DB_Table, DB_KEY } from "../common/constants";
-import { dynamoDB } from "../common/awsService";
+import middy from '@middy/core';
+import jsonBodyParser from '@middy/http-json-body-parser';
+import { APIGatewayEvent } from 'aws-lambda/trigger/api-gateway-proxy';
 
-import jsonBodyParser from "@middy/http-json-body-parser";
+import { dynamoDB } from '../common/awsService';
+import { DYNAMO_DB_Table, DB_KEY } from '../common/constants';
+import { BaseResponse } from '../common/response';
 
 const appKey = `${DB_KEY}#NOTE`;
-
-import middy from "@middy/core";
-import { APIGatewayEvent } from "aws-lambda/trigger/api-gateway-proxy";
 
 export const handler = middy(async (event: APIGatewayEvent) => {
   const { code } = event.queryStringParameters || {};
   const response = new BaseResponse(code);
   try {
     const params = {
-      TableName: DYNAMO_DB_Table || "",
-      KeyConditionExpression: "#appKey = :appKey",
+      TableName: DYNAMO_DB_Table || '',
+      KeyConditionExpression: '#appKey = :appKey',
       ExpressionAttributeNames: {
-        "#appKey": "appKey",
+        '#appKey': 'appKey',
       },
       ExpressionAttributeValues: {
-        ":appKey": appKey,
+        ':appKey': appKey,
       },
     };
     const result = await dynamoDB.query(params).promise();

@@ -1,16 +1,16 @@
-import { randomUUID } from "crypto";
-import { BaseResponse } from "../common/response";
-import { DYNAMO_DB_Table, DB_KEY } from "../common/constants";
-import { dynamoDB } from "../common/awsService";
+import { randomUUID } from 'crypto';
 
-import jsonBodyParser from "@middy/http-json-body-parser";
-import { APIGatewayEvent, APIGatewayProxyResult } from "aws-lambda";
+import middy from '@middy/core';
+import jsonBodyParser from '@middy/http-json-body-parser';
+import { APIGatewayEvent, APIGatewayProxyResult } from 'aws-lambda';
+
+import { dynamoDB } from '../common/awsService';
+import { DYNAMO_DB_Table, DB_KEY } from '../common/constants';
+import { BaseResponse } from '../common/response';
 
 const appKey = `${DB_KEY}#NOTE`;
 
-import middy from "@middy/core";
-
-export const handler = middy(async (event: APIGatewayEvent) => {
+export const handler = middy(async (event: APIGatewayEvent): Promise<APIGatewayProxyResult> => {
   const { code } = event.queryStringParameters || {};
   const note = event.body as any;
   const uid = randomUUID();
@@ -20,7 +20,7 @@ export const handler = middy(async (event: APIGatewayEvent) => {
   try {
     await dynamoDB
       .put({
-        TableName: DYNAMO_DB_Table || "",
+        TableName: DYNAMO_DB_Table || '',
         Item: {
           appKey: appKey,
           sortKey: `note#${uid}`,
@@ -28,21 +28,21 @@ export const handler = middy(async (event: APIGatewayEvent) => {
           updatedDate: new Date().toISOString(),
           createdBy,
           id: uid,
-          title: note.title || "",
-          content: note.content || "",
+          title: note.title || '',
+          content: note.content || '',
           metadata: note.metadata || {},
         },
       })
       .promise();
     const result = await dynamoDB
       .query({
-        TableName: DYNAMO_DB_Table || "",
-        KeyConditionExpression: "#appKey = :appKey",
+        TableName: DYNAMO_DB_Table || '',
+        KeyConditionExpression: '#appKey = :appKey',
         ExpressionAttributeNames: {
-          "#appKey": "appKey",
+          '#appKey': 'appKey',
         },
         ExpressionAttributeValues: {
-          ":appKey": appKey,
+          ':appKey': appKey,
         },
       })
       .promise();

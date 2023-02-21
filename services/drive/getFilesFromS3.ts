@@ -1,10 +1,10 @@
-import middy from "@middy/core";
-import jsonBodyParser from "@middy/http-json-body-parser";
-import { APIGatewayEvent } from "aws-lambda/trigger/api-gateway-proxy";
+import middy from '@middy/core';
+import jsonBodyParser from '@middy/http-json-body-parser';
+import { APIGatewayEvent } from 'aws-lambda/trigger/api-gateway-proxy';
 
-import { BaseResponse } from "../common/response";
-import { s3, dynamoDB } from "../common/awsService";
-import { S3_BUCKET_NAME, DB_KEY, DYNAMO_DB_Table } from "../common/constants";
+import { dynamoDB } from '../common/awsService';
+import { DB_KEY, DYNAMO_DB_Table } from '../common/constants';
+import { BaseResponse } from '../common/response';
 
 const appKey = `${DB_KEY}#FOLDERS_FILE`;
 
@@ -14,16 +14,15 @@ export const handler = middy(async (event: APIGatewayEvent) => {
   const response = new BaseResponse(code);
   try {
     const params = {
-      TableName: DYNAMO_DB_Table || "",
-      KeyConditionExpression:
-        "#appKey = :appKey and begins_with(#sortKey, :sortKey)",
+      TableName: DYNAMO_DB_Table || '',
+      KeyConditionExpression: '#appKey = :appKey and begins_with(#sortKey, :sortKey)',
       ExpressionAttributeNames: {
-        "#appKey": "appKey",
-        "#sortKey": "sortKey",
+        '#appKey': 'appKey',
+        '#sortKey': 'sortKey',
       },
       ExpressionAttributeValues: {
-        ":appKey": appKey,
-        ":sortKey": folder,
+        ':appKey': appKey,
+        ':sortKey': folder,
       },
     };
     const result = await dynamoDB.query(params).promise();
