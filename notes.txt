@@ -6,18 +6,23 @@ High Priority:
   Create S3 bucket to upload the images
   Create a profile
   Create Roles
-  Create a build version for API
+  Show build version in API
   GitHub Action
+  Set up eslint
+  Setup Prettify
 Medium Priority
   Need to send custom Response code even for error
 Less Priority
   Need to organize the serverless file more properly
   Need to create a different build for production
 
+/me
+  - GET         : Get all the profile
+  - PUT         : Update Profile
 
 /drive
   /{folder}
-    - GET          : Get all the image
+    - GET       : Get all the image
     - POST      : Upload the file
     /{file}
     - DELETE    : Delete the file

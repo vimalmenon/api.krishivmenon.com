@@ -3,6 +3,7 @@ export class BaseResponse {
   public data = null;
   public statusCode = 200;
   public code = 0;
+  public version = "0.0.0";
   constructor(code = "0") {
     this.code = parseInt(code);
   }
