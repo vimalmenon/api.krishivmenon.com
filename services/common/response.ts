@@ -1,9 +1,11 @@
+import packageJson from "../../package.json"
+
 export class BaseResponse {
   public message = "Success";
   public data = null;
   public statusCode = 200;
   public code = 0;
-  public version = "0.0.0";
+  public version = `v${packageJson.version}`;
   constructor(code = "0") {
     this.code = parseInt(code);
   }
@@ -24,6 +26,7 @@ export class BaseResponse {
       data: this.data,
       code: this.code,
       message: this.message,
+      version: this.version,
     };
   };
   public response = () => {
