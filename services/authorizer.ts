@@ -1,14 +1,6 @@
-import { CognitoJwtVerifier } from 'aws-jwt-verify';
 import { APIGatewayTokenAuthorizerEvent, APIGatewayAuthorizerResult } from 'aws-lambda';
 
-import { USER_POOL_ID, CLIENT_ID } from './common/constants';
-
-// Verifier that expects valid access tokens:
-const verifier = CognitoJwtVerifier.create({
-  userPoolId: USER_POOL_ID || '',
-  tokenUse: 'id',
-  clientId: CLIENT_ID || '',
-});
+import { verifier } from './common/cognitoVerifier';
 
 export const handler = async (
   event: APIGatewayTokenAuthorizerEvent

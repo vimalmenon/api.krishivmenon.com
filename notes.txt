@@ -2,23 +2,29 @@ Finished Task:
   Show build version in API
   Move to serverless-bundle
   Need to update createdBy from API
+  Eslint & Prettify
 High Priority:
+  Need to organize the serverless file more properly
   Redirect apis from api.krishivmenon.com
   Create S3 bucket to upload the images
   Create a profile in DB
   Create Roles
   GitHub Action
-  Set up eslint
-  Setup Prettify
+  Get the warning to less than 5
 Medium Priority
   Need to send custom Response code even for error
 Less Priority
-  Need to organize the serverless file more properly
   Need to create a different build for production
 
 /me
   - GET         : Get all the profile
   - PUT         : Update Profile
+
+/roles
+  - GET         : Get all the profile
+  - PUT         : Update Profile
+  - Delete      : Delete note for an id
+  - POST        : Add note for an id
 
 /drive
   /{folder}

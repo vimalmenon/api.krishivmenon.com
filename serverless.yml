@@ -31,6 +31,22 @@ provider:
 functions:
   authorizer:
     handler: services/authorizer.handler
+  # me
+  me:
+    handler: services/me/getMe.handler
+    events:
+      - http:
+          path: /me
+          method: get
+          cors: true
+          authorizer: 
+            name: authorizer
+            resultTtlInSeconds: 0
+    iamRoleStatements:
+      - Effect: "Allow"        
+        Action:
+          - dynamodb:GetItem
+        Resource: "*"
   # drive Apis
   uploadToS3:
     handler: services/drive/uploadToS3.handler
@@ -193,7 +209,7 @@ functions:
         Action:
           - dynamodb:Query
         Resource: "*"
-  getNote:
+  getNote: 
     handler: services/notes/getNote.handler
     events:
       - http:
