@@ -34,6 +34,7 @@ export interface IProfile extends IBaseDB {
   role: string;
   email: string;
   picture: string;
+  provider: string;
 }
 
 export interface IRole extends IBaseDB {

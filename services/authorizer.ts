@@ -22,6 +22,7 @@ export const handler = async (
         },
         context: {
           userEmail: result.email as string,
+          token: event.authorizationToken,
         },
       };
     } else {

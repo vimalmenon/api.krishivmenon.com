@@ -26,8 +26,6 @@ export const handler = middy(async (event: APIGatewayEvent) => {
       },
     };
     const result = await dynamoDB.query(params).promise();
-    if (result.Items?.length === 0) {
-    }
     return response.setData(result.Items).response();
   } catch (error) {
     return response.setMessage(error.message).withError().response();
