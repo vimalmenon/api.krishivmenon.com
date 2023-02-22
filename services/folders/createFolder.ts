@@ -8,6 +8,7 @@ import { getFoldersByParent } from './helper';
 import { dynamoDB } from '../common/awsService';
 import { DYNAMO_DB_Table, DB_KEY } from '../common/constants';
 import { BaseResponse } from '../common/response';
+import { IFolder } from '../types';
 
 const appKey = `${DB_KEY}#FOLDER`;
 
@@ -16,7 +17,7 @@ export const handler = middy(async (event: APIGatewayEvent): Promise<APIGatewayP
   const createdBy = event.requestContext.authorizer?.userEmail;
   const response = new BaseResponse(code);
   try {
-    const folder = event.body as any;
+    const folder = event.body as unknown as IFolder;
     const uid = randomUUID();
 
     await dynamoDB
@@ -31,7 +32,6 @@ export const handler = middy(async (event: APIGatewayEvent): Promise<APIGatewayP
           id: uid,
           label: folder.label || '',
           parent: folder.parent || '',
-          childNode: 0,
           metadata: {},
         },
       })

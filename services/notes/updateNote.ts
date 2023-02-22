@@ -5,12 +5,13 @@ import { APIGatewayEvent } from 'aws-lambda';
 import { dynamoDB } from '../common/awsService';
 import { DYNAMO_DB_Table, DB_KEY } from '../common/constants';
 import { BaseResponse } from '../common/response';
+import { INote } from '../types';
 
 const appKey = `${DB_KEY}#NOTE`;
 
 export const handler = middy(async (event: APIGatewayEvent) => {
   const id = event.pathParameters?.id;
-  const body = event.body as any;
+  const body = event.body as unknown as INote;
   const { code } = event.queryStringParameters || {};
   const response = new BaseResponse(code);
   try {

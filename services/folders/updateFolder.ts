@@ -5,12 +5,13 @@ import { APIGatewayEvent, APIGatewayProxyResult } from 'aws-lambda';
 import { dynamoDB } from '../common/awsService';
 import { DYNAMO_DB_Table, DB_KEY } from '../common/constants';
 import { BaseResponse } from '../common/response';
+import { IFolder } from '../types';
 
 const appKey = `${DB_KEY}#FOLDER`;
 
 export const handler = middy(async (event: APIGatewayEvent): Promise<APIGatewayProxyResult> => {
   const id = event.pathParameters?.id;
-  const body = event.body as any;
+  const body = event.body as unknown as IFolder;
   const response = new BaseResponse();
   try {
     const params = {

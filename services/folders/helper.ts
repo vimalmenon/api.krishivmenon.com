@@ -1,9 +1,11 @@
+import { DocumentClient } from 'aws-sdk/clients/dynamodb';
+
 import { dynamoDB } from '../common/awsService';
 import { DYNAMO_DB_Table, DB_KEY } from '../common/constants';
 
 const appKey = `${DB_KEY}#FOLDER`;
 
-export const getFoldersByParent = (parentId: string) => {
+export const getFoldersByParent = (parentId: string): Promise<DocumentClient.QueryOutput> => {
   const params = {
     TableName: DYNAMO_DB_Table || '',
     KeyConditionExpression: '#appKey = :appKey',

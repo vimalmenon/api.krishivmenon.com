@@ -23,10 +23,9 @@ export interface INote extends IBaseDB {
 
 export interface IFolder extends IBaseDB {
   id: string;
-  metadata?: Record<string, string>;
   label: string;
   parent: string;
-  content: string[];
+  metadata?: Record<string, string>;
 }
 
 export interface IProfile extends IBaseDB {

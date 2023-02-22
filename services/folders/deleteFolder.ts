@@ -2,7 +2,7 @@ import middy from '@middy/core';
 import jsonBodyParser from '@middy/http-json-body-parser';
 import { APIGatewayEvent, APIGatewayProxyResult } from 'aws-lambda';
 
-import { getFoldersByParent } from './helper';
+import { getFoldersByParent, getFolderById } from './helper';
 import { dynamoDB } from '../common/awsService';
 import { DYNAMO_DB_Table, DB_KEY } from '../common/constants';
 import { BaseResponse } from '../common/response';
@@ -21,7 +21,8 @@ export const handler = middy(async (event: APIGatewayEvent): Promise<APIGatewayP
         sortKey: `folder#${id}`,
       },
     };
-    const item = (await dynamoDB.get(params).promise()).Item as any;
+
+    const item = (await getFolderById(id as string)).Item as any;
     await dynamoDB.delete(params).promise();
     const result = (await getFoldersByParent(item.parent)) as any;
     return response.setData(result.Items).response();
