@@ -32,7 +32,7 @@ functions:
   authorizer:
     handler: services/authorizer.handler
   # me
-  me:
+  getProfile:
     handler: services/me/getMe.handler
     events:
       - http:
@@ -46,6 +46,23 @@ functions:
       - Effect: "Allow"        
         Action:
           - dynamodb:GetItem
+          - dynamodb:PutItem
+        Resource: "*"
+  updateProfile:
+    handler: services/me/updateMe.handler
+    events:
+      - http:
+          path: /me
+          method: post
+          cors: true
+          authorizer: 
+            name: authorizer
+            resultTtlInSeconds: 0
+    iamRoleStatements:
+      - Effect: "Allow"        
+        Action:
+          - dynamodb:GetItem
+          - dynamodb:PutItem
         Resource: "*"
   # drive Apis
   uploadToS3:
