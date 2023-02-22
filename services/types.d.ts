@@ -40,3 +40,16 @@ export interface IRole extends IBaseDB {
   name: string;
   roles: string[];
 }
+
+export interface IBody {
+  data: unknown;
+  code: number;
+  message: string;
+  version: string;
+}
+
+export interface IBaseResponseResponse {
+  statusCode: number;
+  headers: Record<string, string>;
+  body: string;
+}

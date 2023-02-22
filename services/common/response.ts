@@ -1,4 +1,5 @@
 import packageJson from '../../package.json';
+import { IBody, IBaseResponseResponse } from '../types';
 
 export class BaseResponse {
   public message = 'Success';
@@ -9,19 +10,19 @@ export class BaseResponse {
   constructor(code = '0') {
     this.code = parseInt(code);
   }
-  public setData = (data) => {
+  public setData = (data): BaseResponse => {
     this.data = data;
     return this;
   };
-  public setMessage = (message: string) => {
+  public setMessage = (message: string): BaseResponse => {
     this.message = message;
     return this;
   };
-  public withError(statusCode = 500) {
+  public withError(statusCode = 500): BaseResponse {
     this.statusCode = statusCode;
     return this;
   }
-  private getBody = () => {
+  private getBody = (): IBody => {
     return {
       data: this.data,
       code: this.code,
@@ -29,7 +30,7 @@ export class BaseResponse {
       version: this.version,
     };
   };
-  public response = () => {
+  public response = (): IBaseResponseResponse => {
     return {
       statusCode: this.statusCode,
       headers: {
