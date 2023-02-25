@@ -9,7 +9,7 @@ import { BaseResponse } from '../common/response';
 
 const appKey = `${DB_KEY}#PROFILE`;
 
-const columns = ['name', 'email', 'role', 'provider', 'avatar', ...commonTableColumn];
+const columns = ['#name', 'email', '#role', 'provider', 'avatar', ...commonTableColumn];
 
 export const handler = middy(async (event: APIGatewayEvent) => {
   const { code } = event.queryStringParameters || {};
@@ -19,6 +19,10 @@ export const handler = middy(async (event: APIGatewayEvent) => {
     const params = {
       TableName: DYNAMO_DB_Table || '',
       ProjectionExpression: columns.join(','),
+      ExpressionAttributeNames: {
+        '#name': 'name',
+        '#role': 'role',
+      },
       Key: {
         appKey: appKey,
         sortKey: userEmail,
