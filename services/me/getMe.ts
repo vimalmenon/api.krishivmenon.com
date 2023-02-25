@@ -4,10 +4,12 @@ import { APIGatewayEvent } from 'aws-lambda/trigger/api-gateway-proxy';
 
 import { dynamoDB } from '../common/awsService';
 import { verifier } from '../common/cognitoVerifier';
-import { DB_KEY, DYNAMO_DB_Table } from '../common/constants';
+import { commonTableColumn, DB_KEY, DYNAMO_DB_Table } from '../common/constants';
 import { BaseResponse } from '../common/response';
 
 const appKey = `${DB_KEY}#PROFILE`;
+
+const columns = ['name', 'email', 'role', 'provider', 'avatar', ...commonTableColumn];
 
 export const handler = middy(async (event: APIGatewayEvent) => {
   const { code } = event.queryStringParameters || {};
@@ -16,6 +18,7 @@ export const handler = middy(async (event: APIGatewayEvent) => {
   try {
     const params = {
       TableName: DYNAMO_DB_Table || '',
+      ProjectionExpression: columns.join(','),
       Key: {
         appKey: appKey,
         sortKey: userEmail,
