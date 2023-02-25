@@ -3,11 +3,13 @@ Finished Task:
   Move to serverless-bundle
   Need to update createdBy from API
   Eslint & Prettify
+  Create a profile in DB
+  Create S3 bucket to upload the images
 High Priority:
   Need to organize the serverless file more properly
+  Don't show the appkey & sortKey in response
+  Create the alise for assets.krishivmenon.com
   Redirect apis from api.krishivmenon.com
-  Create S3 bucket to upload the images
-  Create a profile in DB
   Create Roles
   GitHub Action
   Get the warning to less than 5
@@ -16,6 +18,7 @@ Medium Priority
   Need to Sync roles
 Less Priority
   Need to create a different build for production
+  Add testing
 
 /me
   - GET         : Get all the profile

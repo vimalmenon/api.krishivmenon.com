@@ -1,15 +1,18 @@
 import { DocumentClient } from 'aws-sdk/clients/dynamodb';
 
 import { dynamoDB } from '../common/awsService';
-import { DYNAMO_DB_Table, DB_KEY } from '../common/constants';
+import { DYNAMO_DB_Table, DB_KEY, commonTableColumn } from '../common/constants';
 
 const appKey = `${DB_KEY}#FOLDER`;
+
+const columns = ['id', 'label', 'metadata', 'parent', ...commonTableColumn];
 
 export const getFoldersByParent = (parentId: string): Promise<DocumentClient.QueryOutput> => {
   const params = {
     TableName: DYNAMO_DB_Table || '',
     KeyConditionExpression: '#appKey = :appKey',
     FilterExpression: '#parent = :parent',
+    ProjectionExpression: columns.join(','),
     ExpressionAttributeNames: {
       '#appKey': 'appKey',
       '#parent': 'parent',

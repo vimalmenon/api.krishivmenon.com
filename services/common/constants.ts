@@ -45,3 +45,5 @@ export const DriveFolderMapping: Record<string, string> = {
   'video/mp4': StorageFolderMapping.video,
   'audio/mpeg': StorageFolderMapping.audio,
 };
+
+export const commonTableColumn = ['updatedDate', 'createdDate', 'createdBy'];

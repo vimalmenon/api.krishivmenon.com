@@ -7,6 +7,7 @@ import { DYNAMO_DB_Table, DB_KEY } from '../common/constants';
 import { BaseResponse } from '../common/response';
 
 const appKey = `${DB_KEY}#NOTE`;
+const columns = ['content', 'metadata', 'title', 'updatedDate', 'createdDate', 'id'];
 
 export const handler = middy(async (event: APIGatewayEvent): Promise<APIGatewayProxyResult> => {
   const id = event.pathParameters?.id;
@@ -15,6 +16,7 @@ export const handler = middy(async (event: APIGatewayEvent): Promise<APIGatewayP
   try {
     const params = {
       TableName: DYNAMO_DB_Table || '',
+      ProjectionExpression: columns.join(','),
       Key: {
         appKey: appKey,
         sortKey: `note#${id}`,
