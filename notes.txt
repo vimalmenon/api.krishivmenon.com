@@ -7,7 +7,6 @@ Finished Task:
   Create S3 bucket to upload the images
 High Priority:
   Need to organize the serverless file more properly
-  Don't show the appkey & sortKey in response
   Create the alise for assets.krishivmenon.com
   Redirect apis from api.krishivmenon.com
   Create Roles

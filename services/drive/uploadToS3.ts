@@ -31,6 +31,12 @@ export const handler = middy(async (event: APIGatewayEvent) => {
     if (!data.mimetype) {
       return response.setMessage('This format is not support').withError().response();
     }
+    if (!extension) {
+      return response.setMessage('This format is not support').withError().response();
+    }
+    if (!imageFolder) {
+      return response.setMessage('This format is not support').withError().response();
+    }
     const params = {
       Bucket: S3_BUCKET_NAME || '',
       Key: `${imageFolder}/${fileName}`,
