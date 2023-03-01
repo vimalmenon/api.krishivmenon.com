@@ -19,6 +19,10 @@ Less Priority
   Need to create a different build for production
   Add testing
 
+Need to add @middy/do-not-wait-for-empty-event-loop to all the apis
+https://middy.js.org/docs/middlewares/do-not-wait-for-empty-event-loop
+
+
 /me
   - GET         : Get all the profile
   - PUT         : Update Profile
