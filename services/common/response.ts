@@ -37,6 +37,7 @@ export class BaseResponse {
         'Access-Control-Allow-Origin': '*',
       },
       body: JSON.stringify(this.getBody()),
+      isBase64Encoded: false,
     };
   };
 }

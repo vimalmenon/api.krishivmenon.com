@@ -23,6 +23,7 @@ provider:
       - 'application/*'
       - 'image/*'
       - 'multipart/form-data'
+      - '*/*'
   environment:
     S3_BUCKET_NAME: ${env:S3_BUCKET_NAME}
     DYNAMO_DB_Table: ${env:DYNAMO_DB_TABLE}
