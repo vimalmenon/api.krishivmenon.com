@@ -12,6 +12,7 @@ High Priority:
   Create Roles
   GitHub Action
   Get the warning to less than 5
+  [Feature] List all non indexed files
 Medium Priority
   Need to send custom Response code even for error
   Need to Sync roles
