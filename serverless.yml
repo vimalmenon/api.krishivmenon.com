@@ -99,6 +99,23 @@ functions:
           - dynamodb:DeleteItem
           - dynamodb:GetItem
         Resource: "*"
+  updateFileDirectory:
+    handler: services/drive/updateFileDirectory.handler
+    events:
+      - http:
+          path: /drive/directory/{folder}
+          method: put
+          cors: true
+          authorizer: 
+            name: authorizer
+            resultTtlInSeconds: 0
+    iamRoleStatements:
+      - Effect: "Allow"        
+        Action:
+          - dynamodb:DeleteItem
+          - dynamodb:Query
+          - dynamodb:PutItem
+        Resource: "*"
   updateS3File:
     handler: services/drive/updateS3Data.handler
     events:
