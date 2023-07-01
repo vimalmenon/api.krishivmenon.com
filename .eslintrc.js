@@ -35,7 +35,7 @@ module.exports = {
 
         'prettier/prettier': ['error', {}, { usePrettierrc: true }],
         'jsx-a11y/no-onchange': 0,
-        'no-console': ['error', { allow: ['warn', 'error'] }],
+        'no-console': ['warn', { allow: ['warn', 'error'] }],
         // I suggest this setting for requiring return types on functions only where useful
         '@typescript-eslint/explicit-function-return-type': [
           'warn',

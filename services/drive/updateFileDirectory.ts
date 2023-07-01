@@ -26,7 +26,7 @@ export const handler = middy(async (event: APIGatewayEvent) => {
         TableName: DYNAMO_DB_Table || '',
         Key: {
           appKey: appKey,
-          sortKey: result.Items[0].id,
+          sortKey: result.Items[0].sortKey,
         },
       };
       await dynamoDB.delete(params).promise();
@@ -42,7 +42,7 @@ export const handler = middy(async (event: APIGatewayEvent) => {
           },
         })
         .promise();
-      return response.setMessage('Success').response();
+      return response.setMessage('File has been moved').response();
     } else {
       return response.setMessage("Id doesn't exists").withError().response();
     }

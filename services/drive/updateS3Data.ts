@@ -9,7 +9,7 @@ import { BaseResponse } from '../common/response';
 const appKey = `${DB_KEY}#FOLDERS_FILE`;
 
 export const handler = middy(async (event: APIGatewayEvent) => {
-  const { fileName, label, metadata } = (event.body || {}) as any;
+  const { id, label, metadata } = (event.body || {}) as any;
   const { code } = event.queryStringParameters || {};
   const { folder } = event.pathParameters || {};
   const response = new BaseResponse(code);
@@ -19,7 +19,7 @@ export const handler = middy(async (event: APIGatewayEvent) => {
         TableName: DYNAMO_DB_Table || '',
         Key: {
           appKey: appKey,
-          sortKey: `${folder}#${fileName}`,
+          sortKey: `${folder}#${id}`,
         },
         UpdateExpression: `set #label=:label , #metadata=:metadata, #updatedDate=:updatedDate`,
         ExpressionAttributeValues: {
