@@ -32,7 +32,7 @@ export const handler = middy(async (event: APIGatewayEvent): Promise<APIGatewayP
           id: uid,
           label: folder.label || '',
           parent: folder.parent || '',
-          metadata: {},
+          metadata: folder.metadata || {},
         },
       })
       .promise();

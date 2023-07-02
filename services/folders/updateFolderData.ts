@@ -21,7 +21,7 @@ export const handler = middy(async (event: APIGatewayEvent): Promise<APIGatewayP
         appKey: appKey,
         sortKey: `folder#${id}`,
       },
-      UpdateExpression: `set #label=:label , #metadata=:metadata, #updatedDate=:updatedDate`,
+      UpdateExpression: `set #label=:label, #metadata=:metadata, #updatedDate=:updatedDate`,
       ExpressionAttributeValues: {
         ':updatedDate': new Date().toISOString(),
         ':label': body.label,

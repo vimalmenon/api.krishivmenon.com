@@ -196,21 +196,6 @@ functions:
           - dynamodb:Query
           - dynamodb:GetItem
         Resource: "*"
-  updateFolder:
-    handler: services/folders/updateFolder.handler
-    events:
-      - http:
-          path: /folders/{id}
-          method: put
-          cors: true
-          authorizer: 
-            name: authorizer
-            resultTtlInSeconds: 0
-    iamRoleStatements:
-      - Effect: "Allow"
-        Action:
-          - dynamodb:UpdateItem
-        Resource: "*"
   updateFolderData:
     handler: services/folders/updateFolderData.handler
     events:
