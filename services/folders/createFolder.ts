@@ -31,8 +31,9 @@ export const handler = middy(async (event: APIGatewayEvent): Promise<APIGatewayP
           createdBy,
           id: uid,
           label: folder.label || '',
-          parent: folder.parent || '',
+          parent: folder.parent || 'root',
           metadata: folder.metadata || {},
+          isPrivate: folder.isPrivate || false,
         },
       })
       .promise();

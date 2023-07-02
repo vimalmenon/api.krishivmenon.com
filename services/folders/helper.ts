@@ -11,15 +11,17 @@ export const getFoldersByParent = (parentId: string): Promise<DocumentClient.Que
   const params = {
     TableName: DYNAMO_DB_Table || '',
     KeyConditionExpression: '#appKey = :appKey',
-    FilterExpression: '#parent = :parent',
+    FilterExpression: '#parent = :parent and #isPrivate = :isPrivate',
     ProjectionExpression: columns.join(','),
     ExpressionAttributeNames: {
       '#appKey': 'appKey',
       '#parent': 'parent',
+      '#isPrivate': 'isPrivate',
     },
     ExpressionAttributeValues: {
       ':appKey': appKey,
       ':parent': parentId,
+      ':isPrivate': false,
     },
   };
   return dynamoDB.query(params).promise();

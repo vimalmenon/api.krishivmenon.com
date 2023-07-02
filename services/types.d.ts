@@ -25,6 +25,7 @@ export interface IFolder extends IBaseDB {
   id: string;
   label: string;
   parent: string;
+  isPrivate: boolean;
   metadata?: Record<string, string>;
 }
 
