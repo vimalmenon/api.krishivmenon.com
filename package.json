@@ -24,7 +24,7 @@
   "homepage": "https://github.com/vimalmenon/api.krishivmenon.com#readme",
   "devDependencies": {
     "@types/aws-lambda": "^8.10.119",
-    "@typescript-eslint/eslint-plugin": "^5.60.1",
+    "@typescript-eslint/eslint-plugin": "^5.61.0",
     "eslint": "^8.44.0",
     "eslint-config-prettier": "^8.8.0",
     "eslint-plugin-import": "^2.27.5",
@@ -37,12 +37,12 @@
     "typescript": "^5.1.6"
   },
   "dependencies": {
-    "@middy/core": "^4.5.3",
-    "@middy/do-not-wait-for-empty-event-loop": "^4.5.3",
-    "@middy/http-json-body-parser": "^4.5.3",
-    "@middy/http-multipart-body-parser": "^4.5.3",
+    "@middy/core": "^4.5.5",
+    "@middy/do-not-wait-for-empty-event-loop": "^4.5.5",
+    "@middy/http-json-body-parser": "^4.5.5",
+    "@middy/http-multipart-body-parser": "^4.5.5",
     "aws-jwt-verify": "^4.0.0",
-    "aws-sdk": "^2.1409.0",
+    "aws-sdk": "^2.1411.0",
     "serverless": "^3.33.0",
     "serverless-bundle": "^6.0.0"
   }
