@@ -27,6 +27,9 @@ export interface IFolder extends IBaseDB {
   parent: string;
   isPrivate: boolean;
   metadata?: Record<string, string>;
+  canCreateFolder: boolean;
+  canUploadFile: boolean;
+  canDeleteFolder: boolean;
 }
 
 export interface IProfile extends IBaseDB {

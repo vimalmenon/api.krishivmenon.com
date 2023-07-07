@@ -5,7 +5,16 @@ import { DYNAMO_DB_Table, DB_KEY, commonTableColumn } from '../common/constants'
 
 const appKey = `${DB_KEY}#FOLDER`;
 
-const columns = ['id', 'label', 'metadata', 'parent', 'isFixed', ...commonTableColumn];
+const columns = [
+  'id',
+  'label',
+  'metadata',
+  'parent',
+  'canCreateFolder',
+  'canUploadFile',
+  'canDeleteFolder',
+  ...commonTableColumn,
+];
 
 export const getFoldersByParent = (parentId: string): Promise<DocumentClient.QueryOutput> => {
   const params = {
